@@ -39,7 +39,7 @@ class App extends Component {
 
       //   </header>
       // </div>
-    <Layout style={{ minHeight: '100vh' }}>
+      <Layout style={{ minHeight: '100vh' }}>
         <Sider
           trigger={null}
           collapsible
@@ -47,29 +47,22 @@ class App extends Component {
         >
           <div className="logo" />
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-            <Menu.Item key="1">
-            <Link to='/saveaction'>
-              <Icon type="pie-chart" />
-              <span>save action</span></Link>
-            </Menu.Item>
-            <Menu.Item key="2">
-            <Link to='/actionlist'>
-              <Icon type="desktop" />
-              <span>action list</span></Link>
-            </Menu.Item>
             <SubMenu
               key="sub1"
-              title={<span><Icon type="user" /><span>User</span></span>}
+              title={<span><Icon type="user" /><span>Action</span></span>}
             >
-              <Menu.Item key="3">Tom</Menu.Item>
-              <Menu.Item key="4">Bill</Menu.Item>
-              <Menu.Item key="5">Alex</Menu.Item>
+              <Menu.Item key="1">  <Link to='/actionlist'>
+                <Icon type="desktop" />Action</Link></Menu.Item>
+              <Menu.Item key="4">
+                <Icon type="desktop" />Action组</Menu.Item>
             </SubMenu>
             <SubMenu
               key="sub2"
-              title={<span><Icon type="team" /><span>Team</span></span>}
+              title={<span><Icon type="team" /><span>任务</span></span>}
             >
-              <Menu.Item key="6">Team 1</Menu.Item>
+              <Menu.Item key="6">
+                <Link to="/jobgrouplist">任务</Link>
+              </Menu.Item>
               <Menu.Item key="8">Team 2</Menu.Item>
             </SubMenu>
             <Menu.Item key="9">
@@ -87,7 +80,7 @@ class App extends Component {
             />
           </Header>
           <Content style={{ margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280 }}>
-          {this.props.children}
+            {this.props.children}
           </Content>
         </Layout>
       </Layout>

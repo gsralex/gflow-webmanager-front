@@ -1,46 +1,54 @@
 import React, { Component } from 'react';
 import { Form, Input, Tooltip, Icon, Cascader, Select, message, Button, AutoComplete } from 'antd';
-import ReactDOM from 'react-dom';
 import Request from 'superagent';
 
 import RepCode from '../constant/RepCodeContants';
-import { link } from 'fs';
 const FormItem = Form.Item;
-const Option = Select.Option;
-const AutoCompleteOption = AutoComplete.Option;
+
 
 class SaveAction extends Component {
-    state={
-        ok:false
-    }
 
-
+    id = 0;
     componentDidMount() {
         // To disabled submit button at the beginning.
         // this.props.form.validateFields();
-        let id = this.props.id;
-        console.log(id);
+        this.id = this.props.id;
+        if (this.id > 0) {
+            this.getData();
+        }
+    }
+
+    getData() {
+        Request
+            .get('http://dev.gsralex.com:8080/api/action/get')
+            .query('id=' + this.id)
+            .end((err, res) => {
+                if (res.body.code == RepCode.CODE_OK) {
+                    let data = res.body.data;
+                    this.props.form.setFieldsValue({
+                        name: data.name,
+                        className: data.className
+                    });
+                }
+            });
     }
 
 
 
     handleSubmit = (e) => {
         e.preventDefault();
-        const _this=this;
-
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 Request
                     .post('http://dev.gsralex.com:8080/api/action/save')
                     .send('name=' + values.name)
                     .send('className=' + values.className)
+                    .send('id=' + this.id)
                     .end((err, res) => {
                         if (!err) {
                             if (res.body.code == RepCode.CODE_OK) {
                                 message.success("保存成功");
-                                this.state.ok=true;
-                                _this.props.toParent(this.state.ok);
-                                //this.props.history.push("/actionlist");
+                                this.props.store.dispatch({ type: 'saveOk' });
 
                             } else {
                                 message.error(res.body.msg);
@@ -54,7 +62,7 @@ class SaveAction extends Component {
     }
 
     render() {
-        const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
+        const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched, resetFields } = this.props.form;
 
         // const { form: { validateFields } } = this.props;
         const formItemLayout = {
@@ -71,7 +79,7 @@ class SaveAction extends Component {
         const tailFormItemLayout = {
             wrapperCol: {
                 xs: {
-                    span: 10,
+                    span: 20,
                     offset: 0,
                 },
                 sm: {
