@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Table, Divider, Layout, Input, Button, Modal, message } from 'antd';
+import { Table, Divider, Layout, Input, Button, Modal, message, Icon, Spin } from 'antd';
 import { Resizable } from 'react-resizable';
 import Request from 'superagent';
-import RepCode from '../constant/RepCodeContants';
+import RepCode from '../../constant/RepCodeContants';
 import SaveActionForm from './SaveAction';
 import { createStore } from 'redux'
-import SaveOk from './SaveActionReducer'
-
+import SaveOk from '../reducer/SaveReducer'
+import StatusLabel from "../../constant/StatusLabel"
 const store = createStore(SaveOk)
 const ResizeableTitle = (props) => {
     const { onResize, width, ...restProps } = props;
@@ -63,7 +63,7 @@ export default class ActionList extends Component {
             .end((err, res) => {
                 if (res.body.code == RepCode.CODE_OK) {
                     message.success("删除成功");
-                    this.getData(1);
+                    this.getData(this.state.pageIndex);
                 }
             });
     }
@@ -74,6 +74,7 @@ export default class ActionList extends Component {
         visible: false,
         name: '',
         className: '',
+        loading: false,
         columns: [{
             title: 'id',
             dataIndex: 'id',
@@ -88,12 +89,16 @@ export default class ActionList extends Component {
             width: 300,
         }, {
             title: '创建时间',
-            dataIndex: 'createTime',
             width: 100,
+            render: (text, record) => (
+                <span>{StatusLabel.formatTime(record.createTime)}</span>
+            )
         }, {
             title: '修改时间',
-            dataIndex: 'modTime',
             width: 100,
+            render: (text, record) => (
+                <span>{StatusLabel.formatTime(record.modTime)}</span>
+            )
         }, {
             title: '操作',
             key: 'action',
@@ -107,10 +112,8 @@ export default class ActionList extends Component {
             ),
         }],
         dataSource: {},
-        queryInfo: {
-            pageSize: 30,
-            pageIndex: 1
-        }
+        pageSize: 30,
+        pageIndex: 1
     };
 
     components = {
@@ -154,29 +157,39 @@ export default class ActionList extends Component {
         });
     };
 
-    getData = (pageIndex) => {
-        this.state.queryInfo.pageIndex=pageIndex;
-        Request
-            .get('http://dev.gsralex.com:8080/api/action/list')
-            .query('name=' + this.state.name)
-            .query('className=' + this.state.className)
-            .query('pageSize=' + this.state.queryInfo.pageSize)
-            .query('pageIndex=' + this.state.queryInfo.pageIndex)
-            .end((err, res) => {
-                if (!err) {
-                    if (res.body.code == RepCode.CODE_OK) {
-                        this.setState({
-                            dataSource: {
-                                count: res.body.dataCnt,
-                                data: res.body.data,
-                                page: res.body.pageIndex
-                            },
-                        });
+    getData(pageIndex) {
+        console.log("pageIndex", pageIndex);
+        this.setState({
+            loading: true,
+            pageIndex: pageIndex
+        }, () => {
+            Request
+                .get('http://dev.gsralex.com:8080/api/action/list')
+                .query('name=' + this.state.name)
+                .query('className=' + this.state.className)
+                .query('pageSize=' + this.state.pageSize)
+                .query('pageIndex=' + this.state.pageIndex)
+                .end((err, res) => {
+                    if (!err) {
+                        if (res.body.code == RepCode.CODE_OK) {
+                            this.setState({
+                                dataSource: {
+                                    count: res.body.dataCnt,
+                                    data: res.body.data,
+                                    page: res.body.pageIndex
+                                },
+                                loading: false
+                            });
+                        }
                     } else {
+                        message.error("请求失败");
+                        this.setState({
+                            loading: false
+                        });
                     }
-                }
+                });
+        });
 
-            });
     }
 
     render() {
@@ -215,24 +228,23 @@ export default class ActionList extends Component {
                             store={store} />
                     </Modal>
                 </div>
+
                 <Table
                     bordered
                     components={this.components}
                     columns={columns}
                     dataSource={this.state.dataSource.data}
+                    loading={this.state.loading}
                     pagination={{  //分页
                         total: this.state.dataSource.count, //数据总数量
-                        defaultCurrent:this.state.queryInfo.pageIndex,//默认的当前页数
-                        pageSize: this.state.queryInfo.pageSize,  //每页条数
-                        defaultPageSize: this.state.queryInfo.pageSize, //默认的每页条数
+                        current: this.state.pageIndex,//默认的当前页数
+                        pageSize: this.state.pageSize,  //每页条数
                         showSizeChanger: true,  //是否显示可以设置几条一页的选项
-                        onShowSizeChange(current, pageSize) {  //当几条一页的值改变后调用函数，current：改变显示条数时当前数据所在页；pageSize:改变后的一页显示条数
+                        onShowSizeChange(page, pageSize) {  //当几条一页的值改变后调用函数，current：改变显示条数时当前数据所在页；pageSize:改变后的一页显示条数
                             _this.setState({
-                                queryInfo: {
-                                    pageSize: pageSize
-                                }
+                                pageSize: pageSize
                             });
-                            _this.getData(1); //这边已经设置了self = this
+                            _this.getData(1);
                         },
                         onChange(page, pageSize) {  //点击改变页数的选项时调用函数，current:将要跳转的页数
                             _this.getData(page);

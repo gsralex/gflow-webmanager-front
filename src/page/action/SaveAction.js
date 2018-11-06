@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Form, Input, Tooltip, Icon, Cascader, Select, message, Button, AutoComplete } from 'antd';
 import Request from 'superagent';
 
-import RepCode from '../constant/RepCodeContants';
+import RepCode from '../../constant/RepCodeContants';
 const FormItem = Form.Item;
 
 
