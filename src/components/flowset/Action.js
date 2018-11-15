@@ -9,8 +9,10 @@ export default class Action {
     index = 0;
     pre = [];
     next = [];
+    type = 0;
 
-    constructor(index, x, y, width, height) {
+    constructor(type, index, x, y, width, height) {
+        this.type = type;
         this.index = index;
         this.x = x;
         this.y = y;
@@ -18,9 +20,13 @@ export default class Action {
         this.height = height;
     }
 
-    appendPre(action) {
+    hasPre(action) {
         var index = this.pre.findIndex(x => x.index == action.index);
-        if (index < 0) {
+        return index < 0 ? false : true;
+    }
+
+    appendPre(action) {
+        if (!this.hasPre(action)) {
             this.pre.push(action);
         }
     }
@@ -30,9 +36,14 @@ export default class Action {
         this.pre.splice(index, 1);
     }
 
-    appendNext(action) {
+    hasNext(action) {
         var index = this.next.findIndex(x => x.index == action.index);
-        if (index < 0) {
+        console.log("index",index);
+        return index < 0 ? false : true;
+    }
+
+    appendNext(action) {
+        if (!this.hasNext(action)) {
             this.next.push(action);
         }
     }

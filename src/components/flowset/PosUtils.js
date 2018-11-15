@@ -1,45 +1,41 @@
-
-
-
+import ActionType from "./ActionType";
 
 export default class PosUtils {
 
+    static HELPER_WIDTH = 20;
+    static HELPER_HEIGHT = 10;
+    static BORDER = 2;
+
+
+
     static getActionUpPos(action) {
-        var x = action.x + action.width / 2;
-        var y = action.y;
-        return { x: x, y: y };
+        if (action.type == ActionType.Action) {
+            var x = action.x + action.width / 2;
+            var y = action.y;
+            return { x: x, y: y };
+        } else {
+            var x = action.x;
+            var y = action.y - action.height / 2;
+            return { x: x, y: y };
+        }
     }
+
 
     static getActionDownPos(action) {
-        var x = action.x + action.width / 2;
-        var y = action.y + action.height;
-        return { x: x, y: y };
+        if (action.type == ActionType.Action) {
+            var x = action.x + action.width / 2;
+            var y = action.y + action.height;
+            return { x: x, y: y };
+        } else {
+            var x = action.x;
+            var y = action.y + action.height / 2;
+            return { x: x, y: y };
+        }
     }
 
-    static getActionHelperPos(action){
-        var width = 20;
-        var height = 10;
-        var xy= this.getActionDownPos(action);
-        return { x: xy.x, y: xy.y + height };
-    }
-
-    static getStartUpPos(action) {
-        var x = action.x;
-        var y = action.y - action.height / 2;
-        return { x: x, y: y };
-
-    }
-    static getStartDownPos(action) {
-        var x = action.x;
-        var y = action.y + action.height / 2;
-        return { x: x, y: y };
-    }
-
-    static getStartHelperPos(action) {
-        var width = 20;
-        var height = 10;
-        var xy = this.getStartDownPos();
-        return { x: xy.x, y: xy.y + height };
-
+    static getHelperPointPos(action) {
+        var xy = this.getActionDownPos(action);
+        xy.y += this.HELPER_HEIGHT + this.BORDER;
+        return xy;
     }
 }

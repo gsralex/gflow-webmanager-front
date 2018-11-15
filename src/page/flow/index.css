@@ -6,7 +6,7 @@
 
 .actionList{
     background: #fff;
-     width: 300px;
+     width: 200px;
       padding: 0 15px 0 0;
       overflow:hidden;
       text-overflow:ellipsis;
@@ -24,7 +24,8 @@
 .actionHelper{
     width:130px;
     height: 50px;
-    background: #f00;
+    background: #F0FFFF;
+    border:2px solid gray;
     z-index: 10000;
     position: absolute;
     border-radius: 3px;
@@ -33,6 +34,6 @@
 
 .flow{
     width:100%;
-    border:1px solid #ff0;
+    border:1px dashed #CAE1FF;
     padding:10;
 }

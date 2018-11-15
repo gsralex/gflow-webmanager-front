@@ -1,11 +1,19 @@
-.line{
+
+.flow-start{
+    fill:#C0FF3E;stroke:gray;stroke-width:2;opacity:0.5
+}
+.flow-line{
     stroke:#ccc;stroke-width:2
 }
 
-.action{
-
+.flow-action{
+    stroke-linecap:round; fill:#F0FFFF;stroke:gray;stroke-width:2;opacity:0.5
 }
 
-.helper{
+.flow-action-selected{
+    border:1px dashed gray;
+}
+
+.flow-helper{
     fill:gray;stroke:gray;stroke-width:2;opacity:0.5
 }

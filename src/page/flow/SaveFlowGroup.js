@@ -85,23 +85,7 @@ export default class SaveFlowGroup extends Component {
         }
     }
 
-    enterFlow(e) {
-        if (this.moving) {
-            this.isEnterFlow = true;
-            this.setState({
-                flowStyle: { 'border-color': 'blue' }
-            });
-        }
-    }
-
-    outFlow(e) {
-        if (this.moving) {
-            this.isEnterFlow = false;
-            this.setState({
-                flowStyle: { 'border-color': '#ff0' }
-            });
-        }
-    }
+    
 
     actionQueryChange(e) {
         this.setState({
@@ -212,7 +196,7 @@ export default class SaveFlowGroup extends Component {
                         )}
                     </InfiniteScroll>
                 </div>
-                <div className="flow" style={this.state.flowStyle} onMouseOver={(e) => this.enterFlow(e)} onMouseOut={(e) => this.outFlow(e)}>
+                <div className="flow" style={this.state.flowStyle}>
                     <Flow onRef={this.onRef} edit={false} />
                 </div>
             </div>
