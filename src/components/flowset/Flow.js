@@ -186,7 +186,7 @@ class Flow extends Component {
         this.actionMap.forEach((value, key, mapObj) => {
             console.log("va", value);
             value.next.forEach((item, index, arr) => {
-                var po = new ActionPo(value.index, value.actionId, item.index);
+                var po = new ActionPo(value.index, value.actionId, item.index,item.actionId);
                 list.push(po);
             });
         });
