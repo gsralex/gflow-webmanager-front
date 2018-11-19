@@ -10,10 +10,12 @@ export default class Action {
     pre = [];
     next = [];
     type = 0;
+    actionId = 0;
 
-    constructor(type, index, x, y, width, height) {
+    constructor(type, index, actionId, x, y, width, height) {
         this.type = type;
         this.index = index;
+        this.actionId = actionId;
         this.x = x;
         this.y = y;
         this.width = width;
@@ -38,7 +40,7 @@ export default class Action {
 
     hasNext(action) {
         var index = this.next.findIndex(x => x.index == action.index);
-        console.log("index",index);
+        console.log("index", index);
         return index < 0 ? false : true;
     }
 

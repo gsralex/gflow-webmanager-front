@@ -7,7 +7,7 @@
 }
 
 .flow-action{
-    stroke-linecap:round; fill:#F0FFFF;stroke:gray;stroke-width:2;opacity:0.5
+    fill:#F0FFFF;stroke:gray;stroke-width:2;opacity:0.5
 }
 
 .flow-action-selected{

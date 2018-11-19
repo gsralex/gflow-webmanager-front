@@ -17,6 +17,9 @@ export default class SaveFlowGroup extends Component {
         this.getActionList();
         document.addEventListener('mouseup', this.pageMouseUp.bind(this));
         document.addEventListener('mousemove', this.pageMouseMove.bind(this));
+        this.setState({
+            flowHeight: document.body.clientHeight - 140
+        })
     }
 
     state = {
@@ -34,20 +37,21 @@ export default class SaveFlowGroup extends Component {
         loading: false,
         hasMore: true,
         pageSize: 30,
-        pageIndex: 1
+        pageIndex: 1,
+        flowHeight: 0
     }
 
     moving = false;
     x = 0;
     y = 0;
+    actionId = 0;
     isEnterFlow = false;
     actionMouseDown(e, id, name, className) {
         console.log("e", e);
         this.moving = true;
-        console.log("x:", e.pageX + ",y:", e.pageY)
         this.x = e.pageX;
         this.y = e.pageY;
-        console.log("actionMouseDown");
+        this.actionId = id;
         this.setState({
             selected: {
                 id: id,
@@ -78,14 +82,14 @@ export default class SaveFlowGroup extends Component {
             this.moving = false;
             console.log("pageMouseUp");
             console.log("pageX:" + e.pageX + ",pageY:" + e.pageY);
-            this.flow.createAction(e.pageX, e.pageY, '', '');
+            this.flow.createAction(e.pageX, e.pageY, this.actionId, '', '');
             this.setState({
                 actionStyle: { 'display': 'none' }
             });
         }
     }
 
-    
+
 
     actionQueryChange(e) {
         this.setState({
@@ -97,23 +101,24 @@ export default class SaveFlowGroup extends Component {
 
     getActionMore() {
         this.setState({
-            loading: true
+            loading: true,
+            pageIndex: this.state.pageIndex + 1
         });
-        this.getActionData((data) => {
+        this.getActionData((rsp) => {
             var loadedData = this.state.actionList.data;
-            loadedData.concat(data);
+            loadedData = loadedData.concat(rsp.data);
             var hasMore = true;
-            if (loadedData.length >= data.count) {
+            console.log(loadedData.length, ",", rsp.count);
+            if (loadedData.length >= rsp.count) {
                 hasMore = false;
             }
 
             this.setState({
                 loading: false,
                 actionList: {
-                    data: loadedData,
-                    count: data.count,
-                    hasMore: hasMore
-                }
+                    data: loadedData
+                },
+                hasMore: hasMore
             });
         });
 
@@ -123,12 +128,12 @@ export default class SaveFlowGroup extends Component {
         this.setState({
             loading: true
         });
-        this.getActionData((data) => {
-            console.log("getActionList", data);
+        this.getActionData((rsp) => {
+            console.log("getActionList", rsp);
             this.setState({
                 actionList: {
-                    data: data.data,
-                    count: data.count
+                    data: rsp.data,
+                    count: rsp.count
                 }
             });
         });
@@ -162,17 +167,17 @@ export default class SaveFlowGroup extends Component {
     render() {
         const _this = this;
         return (
-            <div className="flowGroup">
+            <div className="flowGroup" style={{ height: this.state.flowHeight }}>
                 <div style={this.state.actionStyle} className="actionHelper">
                     <div>{this.state.selected.id} {this.state.selected.name}</div>
                     <div>{this.state.selected.className}</div>
                 </div>
-                <div className="actionList" style={{ 'overflow': '' }}>
+                <div className="actionList">
                     <Input placeholder="输入action名称或者class" value={this.state.actionQuery} onChange={this.actionQueryChange.bind(this)} />
                     <InfiniteScroll
                         initialLoad={false}
                         pageStart={1}
-                        loadMore={this.getActionMore}
+                        loadMore={this.getActionMore.bind(this)}
                         hasMore={!this.state.loading && this.state.hasMore}
                         useWindow={false}
                     >  <List

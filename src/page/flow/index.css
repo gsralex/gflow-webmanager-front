@@ -1,16 +1,18 @@
 .flowGroup{
     display: flex;
     flex-direction: row;
-     flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    height: 500px;
 }
 
 .actionList{
     background: #fff;
-     width: 200px;
-      padding: 0 15px 0 0;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space: nowrap;
+    width: 300px;
+    padding: 0 15px 0 0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+    overflow: auto;
 
 }
 

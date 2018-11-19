@@ -5,6 +5,7 @@ import Line from './Line';
 import PosUtils from './PosUtils';
 import ActionType from './ActionType';
 import styles from './index.css';
+import ActionPo from './ActionPo';
 
 class Flow extends Component {
     ns = 'http://www.w3.org/2000/svg';
@@ -47,7 +48,6 @@ class Flow extends Component {
             var x = e.pageX - this.clickX;
             var y = e.pageY - this.clickY;
             if (this.moveAction.type == ActionType.Action) {
-                console.log("123");
                 this.moveAction.svg.setAttributeNS(null, "x", this.nodeX + x);
                 this.moveAction.svg.setAttributeNS(null, "y", this.nodeY + y);
             } else {
@@ -67,7 +67,6 @@ class Flow extends Component {
                     line.svg.setAttributeNS(null, "y2", upXy.y);
                 }
             })
-            console.log(this.moveAction);
             var downXy = PosUtils.getHelperPointPos(this.moveAction);
             this.moveAction.next.forEach((item) => {
                 var key = this.moveAction.index + "_" + item.index;
@@ -94,12 +93,10 @@ class Flow extends Component {
             if (x >= value.x && x <= value.x + value.width
                 && y >= value.y && y <= value.y + value.height) {
                 // value.svg.setAttributeNS(null, "class", "flow-action flow-action-selected");
-
                 this.line.nextAction = value;
                 return;
             } else {
                 // value.svg.setAttributeNS(null, "class", "flow-action");
-
                 this.line.nextAction = null;
             }
         })
@@ -146,7 +143,6 @@ class Flow extends Component {
             if (e.button == 0) {
                 this.nodeSelected = true;
                 this.moveAction = this.getActionByNode(node);
-                console.log("moveAction", this.moveAction);
                 this.clickX = e.pageX;
                 this.clickY = e.pageY;
                 if (this.moveAction.type == ActionType.Action) {
@@ -162,6 +158,7 @@ class Flow extends Component {
                 }
                 // console.log("node",this.nodeX, this.nodeY);
                 // console.log("helper",this.helperX,this.helperY);
+                this.saveFlow();
             }
         });
 
@@ -182,6 +179,22 @@ class Flow extends Component {
                 // this.line.nextAction = null;
             }
         });
+    }
+
+    saveFlow() {
+        var list = [];
+        this.actionMap.forEach((value, key, mapObj) => {
+            console.log("va", value);
+            value.next.forEach((item, index, arr) => {
+                var po = new ActionPo(value.index, value.actionId, item.index);
+                list.push(po);
+            });
+        });
+
+        list.forEach((value, index, arr) => {
+            console.log("value", value);
+        });
+
     }
 
     convertPageXy(x, y) {
@@ -206,7 +219,7 @@ class Flow extends Component {
         var height = 20;
         var x = this.selfRect.width / 2 - width / 2;
         var y = 20;
-        this.start = new Action(ActionType.Start, this.currentIndex, x, y, width, height);
+        this.start = new Action(ActionType.Start, this.currentIndex, 0, x, y, width, height);
         var startSvg = document.createElementNS(this.ns, 'circle');
         startSvg.setAttributeNS(null, 'width', width);
         startSvg.setAttributeNS(null, 'height', height);
@@ -225,10 +238,10 @@ class Flow extends Component {
     }
 
     //创建action
-    createAction(x, y, name, className) {
+    createAction(x, y, actionId, name, className) {
         x -= this.selfRect.x;
         y -= this.selfRect.y;
-        var action = new Action(ActionType.Action, this.currentIndex, x, y, 130, 50);
+        var action = new Action(ActionType.Action, this.currentIndex, actionId, x, y, 130, 50);
         var actionSvg = document.createElementNS(this.ns, 'rect');
         actionSvg.setAttributeNS(null, 'width', action.width);
         actionSvg.setAttributeNS(null, 'height', action.height);
@@ -277,9 +290,7 @@ class Flow extends Component {
                 if (action == null) {
                     return;
                 }
-                console.log(action);
                 var xy = PosUtils.getHelperPointPos(action);
-                console.log("123", xy);
                 this.line = new Line(xy.x, xy.y);
                 var lineSvg = document.createElementNS(this.ns, "line");
                 lineSvg.setAttributeNS(null, "class", "flow-line");
