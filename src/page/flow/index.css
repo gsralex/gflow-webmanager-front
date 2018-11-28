@@ -34,8 +34,14 @@
     opacity: 0.5;
 }
 
+.flowWrap{
+    width:100%;
+    height:100%;
+}
+
 .flow{
     width:100%;
     border:1px dashed #CAE1FF;
-    padding:10;
+    padding:10px;
+    margin:10px 0 0 0;
 }

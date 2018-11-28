@@ -89,17 +89,19 @@ class Flow extends Component {
     }
 
     actionMouseMove(x, y) {
+        var hit=false;
         this.actionMap.forEach((value, key, mapObj) => {
             if (x >= value.x && x <= value.x + value.width
                 && y >= value.y && y <= value.y + value.height) {
                 // value.svg.setAttributeNS(null, "class", "flow-action flow-action-selected");
                 this.line.nextAction = value;
+                hit=true;
                 return;
-            } else {
-                // value.svg.setAttributeNS(null, "class", "flow-action");
-                this.line.nextAction = null;
             }
         })
+        if(!hit){
+            this.line.nextAction =null;
+        }
     }
 
     pageMouseUp(e) {
@@ -158,7 +160,7 @@ class Flow extends Component {
                 }
                 // console.log("node",this.nodeX, this.nodeY);
                 // console.log("helper",this.helperX,this.helperY);
-                this.saveFlow();
+                //this.saveFlow();
             }
         });
 
@@ -181,21 +183,34 @@ class Flow extends Component {
         });
     }
 
-    saveFlow() {
-        var list = [];
-        this.actionMap.forEach((value, key, mapObj) => {
-            console.log("va", value);
-            value.next.forEach((item, index, arr) => {
-                var po = new ActionPo(value.index, value.actionId, item.index,item.actionId);
-                list.push(po);
-            });
-        });
 
-        list.forEach((value, index, arr) => {
-            console.log("value", value);
-        });
-
+    getFlowMap(){
+        var list=[];
+        this.actionMap.forEach((value,key,mapObj)=>{
+            var actionPo=new ActionPo(value.index,value.actionId);
+            value.next.forEach((item,index)=>{
+                actionPo.next.push(item.index);
+            })
+            list.push(actionPo);
+        })
+        return list;
     }
+
+    // saveFlow() {
+    //     var list = [];
+    //     this.actionMap.forEach((value, key, mapObj) => {
+    //         console.log("va", value);
+    //         value.next.forEach((item, index, arr) => {
+    //             var po = new ActionPo(value.index, value.actionId, item.index,item.actionId);
+    //             list.push(po);
+    //         });
+    //     });
+
+    //     list.forEach((value, index, arr) => {
+    //         console.log("value", value);
+    //     });
+
+    // }
 
     convertPageXy(x, y) {
         return { x: x - this.selfRect.x, y: y - this.selfRect.y };
@@ -312,6 +327,7 @@ class Flow extends Component {
     render() {
         return (
             <svg id="svg2" style={{ width: '100%', height: '100%', 'user-select': 'none' }}>
+
             </svg>
         );
     }

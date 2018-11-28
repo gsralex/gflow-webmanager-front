@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, Divider, List, Input, Spin } from 'antd';
+import { Layout, Divider, List, Input, Spin, Button, Drawer } from 'antd';
 import { Card } from 'antd';
 import Request from 'superagent';
 import RepCode from '../../constant/RepCodeContants';
@@ -23,6 +23,7 @@ export default class SaveFlowGroup extends Component {
     }
 
     state = {
+        flowGroupName: "",
         selected: {},
         actionPos: {
             x: 0,
@@ -142,6 +143,7 @@ export default class SaveFlowGroup extends Component {
         });
     }
 
+
     getActionData(callback) {
         Request
             .get('http://dev.gsralex.com:8080/api/action/list')
@@ -164,6 +166,36 @@ export default class SaveFlowGroup extends Component {
             });
     }
 
+    saveFlowGroup() {
+        console.log("save");
+        var map= this.flow.getFlowMap();
+        console.log(map);
+        var input={
+            name:this.state.flowGroupName,
+            list:map
+        };
+        console.log(input);
+        Request
+            .post('http://dev.gsralex.com:8080/api/flowgroup/save')
+            .set('Content-Type', 'application/json')
+            .send(input)
+            .end((err, res) => {
+                if (!err) {
+                    // if (res.body.code == RepCode.CODE_OK) {
+                        
+                    // } else {
+
+                    // }
+                }
+                return null;
+            });
+
+    }
+
+    setFlowGroupName(e) {
+        this.setState({ flowGroupName: e.target.value });
+    }
+
     render() {
         const _this = this;
         return (
@@ -183,7 +215,7 @@ export default class SaveFlowGroup extends Component {
                     >  <List
                             bordered={false}
                             className="demo-loadmore-list"
-                            itemLayout="horizontal"
+                            itemLayout="hƒorizontal"
                             dataSource={this.state.actionList.data}
                             renderItem={item => (
                                 <List.Item onMouseDown={(e) => this.actionMouseDown(e, item.id, item.name, item.className)}>
@@ -201,9 +233,28 @@ export default class SaveFlowGroup extends Component {
                         )}
                     </InfiniteScroll>
                 </div>
-                <div className="flow" style={this.state.flowStyle}>
-                    <Flow onRef={this.onRef} edit={false} />
+                <div className="flowWrap" >
+                    <Input placeholder="请输入流程名称" value={this.state.flowGroupName} onChange={this.setFlowGroupName.bind(this)}></Input>
+                    <Button type="primary" onClick={this.saveFlowGroup.bind(this)}>Primary</Button>
+                    <div className="flow" style={{ height: this.state.flowHeight - 30 }}>
+                        <Flow onRef={this.onRef} edit={false} />
+                    </div>
                 </div>
+
+
+                {/* <Drawer
+                        title="Basic Drawer"
+                        placement="right"
+                        closable={true}
+                        onClose={true}
+                        visible={true}
+                        destroyOnClose={true}
+                        placement="right"
+                        >
+                        <p>Some contents...</p>
+                        <p>Some contents...</p>
+                        <p>Some contents...</p>
+                </Drawer> */}
             </div>
         )
     }

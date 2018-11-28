@@ -2,13 +2,10 @@ export default class ActionPo {
 
     index;
     actionId;
-    nextIndex;
-    nextActionId;
+    next=[];
 
-    constructor(index, actionId, nextIndex, nextActionId) {
+    constructor(index, actionId) {
         this.index = index;
         this.actionId = actionId;
-        this.nextIndex = nextIndex;
-        this.nextActionId = nextActionId;
     }
 }
