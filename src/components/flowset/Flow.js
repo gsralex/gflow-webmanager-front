@@ -86,6 +86,7 @@ class Flow extends Component {
             var xy = this.convertPageXy(e.pageX, e.pageY);
             this.actionMouseMove(xy.x, xy.y);
         }
+        e.stopPropagation();
     }
 
     actionMouseMove(x, y) {

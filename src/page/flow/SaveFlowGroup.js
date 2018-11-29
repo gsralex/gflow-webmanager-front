@@ -75,6 +75,7 @@ export default class SaveFlowGroup extends Component {
                 // actionStyle:{'background':'b'}
                 actionStyle: { 'display': 'block', 'transform': 'translate(' + moveX + 'px,' + moveY + 'px)' }
             });
+            e.stopPropagation();//取消冒泡
         }
     }
 
