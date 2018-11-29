@@ -84,7 +84,7 @@ export default class SaveFlowGroup extends Component {
             this.moving = false;
             console.log("pageMouseUp");
             console.log("pageX:" + e.pageX + ",pageY:" + e.pageY);
-            this.flow.createAction(e.pageX, e.pageY, this.actionId, '', '');
+            this.flow.createAction(e.pageX, e.pageY, this.actionId, this.state.selected.name, this.state.selected.className);
             this.setState({
                 actionStyle: { 'display': 'none' }
             });
