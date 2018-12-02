@@ -1,45 +1,13 @@
 
-.flow-startg{
-    width: 30px;
-    position: relative;
-}
-
 .flow-start{
-    /* fill:#C0FF3E;stroke:gray;stroke-width:2;opacity:0.5 */
-    background:#C0FF3E;
-    width: 20px;
-    height: 20px;
-    border-radius: 20px;
-    border:1px solid gray;
-    margin: 0 auto;
+    fill:#C0FF3E;stroke:gray;stroke-width:2;opacity:0.5
 }
 .flow-line{
     stroke:#ccc;stroke-width:2
 }
 
-
-.flow-actiong{
-    width:130px;
-    height: 50px;
-    position: relative;
-}
-
 .flow-action{
-    /* fill:#F0FFFF;stroke:gray;stroke-width:2;opacity:0.5 */
-    width:130px;
-    height: 50px;
-    border: 1px solid gray;
-    border-radius: 5px;
-    position: relative;
-    background: #F0FFFF;
-}
-
-.flow-helper{
-    width: 30px;
-    height: 10px;
-    background: gray;
-    margin: 0 auto;
-    border-radius: 2px;
+    fill:#F0FFFF;stroke:gray;stroke-width:2;opacity:0.5
 }
 
 .flow-action-text{
@@ -51,3 +19,6 @@
     border:1px dashed gray;
 }
 
+.flow-helper{
+    fill:gray;stroke:gray;stroke-width:2;opacity:0.5
+}
