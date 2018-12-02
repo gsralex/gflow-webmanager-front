@@ -10,6 +10,11 @@
     fill:#F0FFFF;stroke:gray;stroke-width:2;opacity:0.5
 }
 
+.flow-action-text{
+    color:#333333;font-size:14px;fill:#333333;
+    text-anchor: middle;  /* 文本水平居中 */
+}
+
 .flow-action-selected{
     border:1px dashed gray;
 }

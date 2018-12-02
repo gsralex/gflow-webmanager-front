@@ -75,8 +75,8 @@ export default class SaveFlowGroup extends Component {
                 // actionStyle:{'background':'b'}
                 actionStyle: { 'display': 'block', 'transform': 'translate(' + moveX + 'px,' + moveY + 'px)' }
             });
-            e.stopPropagation();//取消冒泡
         }
+        e.stopPropagation();//取消冒泡
     }
 
     pageMouseUp(e) {
@@ -84,7 +84,7 @@ export default class SaveFlowGroup extends Component {
             this.moving = false;
             console.log("pageMouseUp");
             console.log("pageX:" + e.pageX + ",pageY:" + e.pageY);
-            this.flow.createAction(e.pageX, e.pageY, this.actionId, '', '');
+            this.flow.createAction(e.pageX, e.pageY, this.actionId, this.state.selected.name, '');
             this.setState({
                 actionStyle: { 'display': 'none' }
             });
@@ -147,7 +147,7 @@ export default class SaveFlowGroup extends Component {
 
     getActionData(callback) {
         Request
-            .get('http://dev.gsralex.com:8080/api/action/list')
+            .get('http://localhost:8080/api/action/list')
             .query('className=' + this.state.actionQuery)
             .query('pageSize=' + this.state.pageSize)
             .query('pageIndex=' + this.state.pageIndex)
@@ -177,7 +177,7 @@ export default class SaveFlowGroup extends Component {
         };
         console.log(input);
         Request
-            .post('http://dev.gsralex.com:8080/api/flowgroup/save')
+            .post('http://localhost:8080/api/flowgroup/save')
             .set('Content-Type', 'application/json')
             .send(input)
             .end((err, res) => {

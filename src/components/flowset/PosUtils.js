@@ -28,7 +28,7 @@ export default class PosUtils {
             return { x: x, y: y };
         } else {
             var x = action.x;
-            var y = action.y + action.height / 2;
+            var y = action.y + this.HELPER_HEIGHT;
             return { x: x, y: y };
         }
     }

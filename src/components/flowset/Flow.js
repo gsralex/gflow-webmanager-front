@@ -7,6 +7,9 @@ import ActionType from './ActionType';
 import styles from './index.css';
 import ActionPo from './ActionPo';
 
+let helperW = 30;
+var helperH = 10;
+
 class Flow extends Component {
     ns = 'http://www.w3.org/2000/svg';
     div;
@@ -47,17 +50,14 @@ class Flow extends Component {
         if (this.nodeSelected) {
             var x = e.pageX - this.clickX;
             var y = e.pageY - this.clickY;
-            if (this.moveAction.type == ActionType.Action) {
-                this.moveAction.svg.setAttributeNS(null, "x", this.nodeX + x);
-                this.moveAction.svg.setAttributeNS(null, "y", this.nodeY + y);
-            } else {
-                this.moveAction.svg.setAttributeNS(null, "cx", this.nodeX + x);
-                this.moveAction.svg.setAttributeNS(null, "cy", this.nodeY + y);
-            }
-            this.moveAction.svgHelper.setAttributeNS(null, "x", this.helperX + x);
-            this.moveAction.svgHelper.setAttributeNS(null, "y", this.helperY + y);
-            this.moveAction.x = this.nodeX + x;
-            this.moveAction.y = this.nodeY + y;
+            var moveX = this.moveAction.startX + x;
+            var moveY = this.moveAction.startY + y;
+            this.moveAction.svgG.setAttributeNS(null, "transform", "translate(" + moveX + "," + moveY + ")");
+            this.moveAction.x = moveX;
+            this.moveAction.y = moveY;
+
+            // this.moveAction.svgHelper.setAttributeNS(null, "x", this.helperX + x);
+            // this.moveAction.svgHelper.setAttributeNS(null, "y", this.helperY + y);
             var upXy = PosUtils.getActionUpPos(this.moveAction);
             this.moveAction.pre.forEach((item) => {
                 var key = item.index + "_" + this.moveAction.index;
@@ -90,18 +90,18 @@ class Flow extends Component {
     }
 
     actionMouseMove(x, y) {
-        var hit=false;
+        var hit = false;
         this.actionMap.forEach((value, key, mapObj) => {
             if (x >= value.x && x <= value.x + value.width
                 && y >= value.y && y <= value.y + value.height) {
                 // value.svg.setAttributeNS(null, "class", "flow-action flow-action-selected");
                 this.line.nextAction = value;
-                hit=true;
+                hit = true;
                 return;
             }
         })
-        if(!hit){
-            this.line.nextAction =null;
+        if (!hit) {
+            this.line.nextAction = null;
         }
     }
 
@@ -141,77 +141,33 @@ class Flow extends Component {
 
 
     bindMoveEvent(action) {
-        var node = action.svg;
+        var node = action.svgG;
         SVG.on(node, 'mousedown', (e) => {
-            if (e.button == 0) {
-                this.nodeSelected = true;
-                this.moveAction = this.getActionByNode(node);
-                this.clickX = e.pageX;
-                this.clickY = e.pageY;
-                if (this.moveAction.type == ActionType.Action) {
-                    this.nodeX = parseInt(this.moveAction.svg.getAttributeNS(null, "x"));
-                    this.nodeY = parseInt(this.moveAction.svg.getAttributeNS(null, "y"));
-                    this.helperX = parseInt(this.moveAction.svgHelper.getAttributeNS(null, "x"));
-                    this.helperY = parseInt(this.moveAction.svgHelper.getAttributeNS(null, "y"));
-                } else {
-                    this.nodeX = parseInt(this.moveAction.svg.getAttributeNS(null, "cx"));
-                    this.nodeY = parseInt(this.moveAction.svg.getAttributeNS(null, "cy"));
-                    this.helperX = parseInt(this.moveAction.svgHelper.getAttributeNS(null, "x"));
-                    this.helperY = parseInt(this.moveAction.svgHelper.getAttributeNS(null, "y"));
-                }
-                // console.log("node",this.nodeX, this.nodeY);
-                // console.log("helper",this.helperX,this.helperY);
-                //this.saveFlow();
+            if (e.button != 0) {
+                return;
             }
+            this.nodeSelected = true;
+            this.moveAction = this.getActionByNode(node);
+            this.clickX = e.pageX;
+            this.clickY = e.pageY;
+            this.moveAction.startX = this.moveAction.x;
+            this.moveAction.startY = this.moveAction.y;
         });
 
-        SVG.on(node, 'mousemove', (e) => {
-            if (this.lineSelected) {
-                // var index = node.getAttributeNS(null, "index");
-                // var action = this.actionMap.get(index);
-                // action.svg.setAttributeNS(null, "style", "fill:red");
-                // this.line.nextAction = action;
-            }
-        });
-
-        SVG.on(node, 'mouseout', (e) => {
-            if (this.lineSelected) {
-                // var index = node.getAttributeNS(null, "index");
-                // var action = this.actionMap.get(index);
-                // action.svg.setAttributeNS(null, "style", "fill:gray");
-                // this.line.nextAction = null;
-            }
-        });
     }
 
 
-    getFlowMap(){
-        var list=[];
-        this.actionMap.forEach((value,key,mapObj)=>{
-            var actionPo=new ActionPo(value.index,value.actionId);
-            value.next.forEach((item,index)=>{
+    getFlowMap() {
+        var list = [];
+        this.actionMap.forEach((value, key, mapObj) => {
+            var actionPo = new ActionPo(value.index, value.actionId);
+            value.next.forEach((item, index) => {
                 actionPo.next.push(item.index);
             })
             list.push(actionPo);
         })
         return list;
     }
-
-    // saveFlow() {
-    //     var list = [];
-    //     this.actionMap.forEach((value, key, mapObj) => {
-    //         console.log("va", value);
-    //         value.next.forEach((item, index, arr) => {
-    //             var po = new ActionPo(value.index, value.actionId, item.index,item.actionId);
-    //             list.push(po);
-    //         });
-    //     });
-
-    //     list.forEach((value, index, arr) => {
-    //         console.log("value", value);
-    //     });
-
-    // }
 
     convertPageXy(x, y) {
         return { x: x - this.selfRect.x, y: y - this.selfRect.y };
@@ -236,18 +192,27 @@ class Flow extends Component {
         var x = this.selfRect.width / 2 - width / 2;
         var y = 20;
         this.start = new Action(ActionType.Start, this.currentIndex, 0, x, y, width, height);
-        var startSvg = document.createElementNS(this.ns, 'circle');
-        startSvg.setAttributeNS(null, 'width', width);
-        startSvg.setAttributeNS(null, 'height', height);
-        startSvg.setAttributeNS(null, 'class', 'flow-start');
-        startSvg.setAttributeNS(null, "r", 10);
-        startSvg.setAttributeNS(null, "cx", x);
-        startSvg.setAttributeNS(null, "cy", y);
-        startSvg.setAttributeNS(null, "index", this.currentIndex);
-        this.start.svg = startSvg;
-        this.append(startSvg);
-        this.start.svgHelper = this.createHelper(this.start);
-        console.log("start", this.start);
+        var gSvg = document.createElementNS(this.ns, "g");
+        this.start.svgG = gSvg;
+        this.append(gSvg);
+        gSvg.setAttributeNS(null, "transform", "translate(" + x + "," + y + ")");
+        gSvg.setAttributeNS(null, "index", this.currentIndex);
+        var svg = document.createElementNS(this.ns, 'circle');
+        gSvg.append(svg);
+        this.start.svg = svg;
+        svg.setAttributeNS(null, 'width', width);
+        svg.setAttributeNS(null, 'height', height);
+        svg.setAttributeNS(null, 'class', 'flow-start');
+        svg.setAttributeNS(null, "r", width/2);
+        svg.setAttributeNS(null, "cx", 0);
+        svg.setAttributeNS(null, "cy", 0);
+        svg.setAttributeNS(null, "index", this.currentIndex);
+
+        this.start.svg = svg;
+        var hx=-helperW/2;
+        var hy=helperH+2;
+        var hSvg = this.createHelper(this.start,hx,hy);
+        gSvg.append(hSvg);
         this.saveMap(this.currentIndex, this.start);
         this.bindMoveEvent(this.start);
         this.currentIndex++;
@@ -257,20 +222,42 @@ class Flow extends Component {
     createAction(x, y, actionId, name, className) {
         x -= this.selfRect.x;
         y -= this.selfRect.y;
-        var action = new Action(ActionType.Action, this.currentIndex, actionId, x, y, 130, 50);
-        var actionSvg = document.createElementNS(this.ns, 'rect');
-        actionSvg.setAttributeNS(null, 'width', action.width);
-        actionSvg.setAttributeNS(null, 'height', action.height);
-        actionSvg.setAttributeNS(null, "x", action.x);
-        actionSvg.setAttributeNS(null, "y", action.y);
-        actionSvg.setAttributeNS(null, "rx", 5);
-        actionSvg.setAttributeNS(null, "ry", 5);
-        actionSvg.setAttributeNS(null, "class", "flow-action");
-        actionSvg.setAttributeNS(null, "index", this.currentIndex);
-        this.append(actionSvg);
-        action.svg = actionSvg;
+        var action = new Action(ActionType.Action, this.currentIndex, actionId, x, y);
+
+        var gSvg = document.createElementNS(this.ns, "g");
+        action.svgG = gSvg;
+        this.append(gSvg);
+        gSvg.setAttributeNS(null, "index", this.currentIndex);
+        gSvg.setAttributeNS(null, "transform", "translate(" + x + "," + y + ")");
+        var svg = document.createElementNS(this.ns, "rect");
+        svg.setAttributeNS(null, 'width', action.width);
+        svg.setAttributeNS(null, 'height', action.height);
+        svg.setAttributeNS(null, "x", 0);
+        svg.setAttributeNS(null, "y", 0);
+        svg.setAttributeNS(null, "rx", 5);
+        svg.setAttributeNS(null, "ry", 5);
+        svg.setAttributeNS(null, "class", "flow-action");
+        svg.setAttributeNS(null, "index", this.currentIndex);
+        gSvg.append(svg);
+        action.svg = svg;
         this.bindMoveEvent(action);
-        action.svgHelper = this.createHelper(action);
+
+        var t = document.createElementNS(this.ns, "text");
+        gSvg.append(t);
+        t.setAttributeNS(null, "x", 65);
+        t.setAttributeNS(null, "y", 25);
+        t.setAttributeNS(null, "class", "flow-action-text");
+        var tSpan = document.createElementNS(this.ns, "tspan");
+        t.append(tSpan);
+        tSpan.innerHTML = name;
+
+
+        //创建helper
+        var hx=action.width/2-helperW/2;
+        var hy=action.height+2;
+        var hSvg = this.createHelper(action,hx,hy);
+        action.svgHelper = hSvg;
+        gSvg.append(hSvg);
         this.saveMap(this.currentIndex, action);
         this.currentIndex++;
     }
@@ -281,19 +268,16 @@ class Flow extends Component {
     }
 
 
-    createHelper(action) {
+    createHelper(action,x,y) {
         var helper = document.createElementNS(this.ns, 'rect');
-        var width = 20;
-        var height = 10;
-        helper.setAttributeNS(null, 'width', width);
-        helper.setAttributeNS(null, 'height', height);
+        helper.setAttributeNS(null, 'width', helperW);
+        helper.setAttributeNS(null, 'height', helperH);
         console.log("action", action);
         var downXy = PosUtils.getActionDownPos(action);
-        helper.setAttributeNS(null, "x", downXy.x - width / 2);
-        helper.setAttributeNS(null, "y", downXy.y + 2);
+        helper.setAttributeNS(null, "x", x);
+        helper.setAttributeNS(null, "y", y);
         helper.setAttributeNS(null, "class", "flow-helper");
         helper.setAttributeNS(null, "index", action.index);
-        this.append(helper);
         this.bindHelperEvent(helper);
         return helper;
     }
@@ -301,6 +285,7 @@ class Flow extends Component {
     bindHelperEvent(helper) {
         SVG.on(helper, 'mousedown', (e) => {
             if (e.button == 0) {
+                console.log("2");
                 this.lineSelected = true;
                 var action = this.getActionByNode(helper);
                 if (action == null) {
@@ -320,6 +305,7 @@ class Flow extends Component {
                 this.lineY = e.pageY;
                 this.append(lineSvg);
             }
+            e.stopPropagation();
         });
     }
 

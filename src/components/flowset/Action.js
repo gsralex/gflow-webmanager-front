@@ -1,10 +1,13 @@
 export default class Action {
 
+    startX=0;
+    startY=0;
     x = 0;
     y = 0;
-    width = 0;
-    height = 0;
+    width = 130;
+    height = 50;
     svg = null;
+    svgG=null;
     svgHelper = null;
     index = 0;
     pre = [];
@@ -12,15 +15,15 @@ export default class Action {
     type = 0;
     actionId = 0;
 
-    constructor(type, index, actionId, x, y, width, height) {
+    constructor(type, index, actionId, x, y) {
         this.type = type;
         this.index = index;
         this.actionId = actionId;
         this.x = x;
         this.y = y;
-        this.width = width;
-        this.height = height;
     }
+
+
 
     hasPre(action) {
         var index = this.pre.findIndex(x => x.index == action.index);
