@@ -87,7 +87,7 @@ export default class FlowGroupList extends Component {
         render: (text, record) => (
             <span>
                 <Link to={{
-                    pathname: "/jobgroupdetail",
+                    pathname: "/saveflowgroup",
                     query: { id: record.id }
                 }}>编辑</Link>
                 <Divider type="vertical" />
