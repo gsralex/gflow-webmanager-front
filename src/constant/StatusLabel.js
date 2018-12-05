@@ -6,9 +6,10 @@ export default class StatusLabel {
             startTime > 0 && endTime > startTime) {
             var useTime = endTime - startTime;
             if (useTime > 1000 * 60) {//大于1分钟
-                return (useTime / (1000 * 60)).toFixed(2) + "分钟";
+                console.log(useTime);
+                return (useTime / (1000 * 60)).toFixed(0) + "分" + ((useTime/1000).toFixed(0) %  60) + "秒";
             } else {
-                return (useTime / 1000).toFixed(2) + "秒";
+                return (useTime / 1000).toFixed(1) + "秒";
             }
         }
         return "";

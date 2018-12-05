@@ -47,13 +47,14 @@ export default class JobGroupList extends Component {
         title: '开始时间',
         width: 200,
         render: (text, record) => (
-            // <span>{new Date(record.startTime).format('YYYYMMDD')}</span>
             <span>{moment(record.startTime).format('YYYY-MM-DD HH:mm:ss')}</span>
         )
     }, {
         title: '结束时间',
-        dataIndex: 'endTime',
         width: 200,
+        render: (text, record) => (
+            <span>{moment(record.endTime).format('YYYY-MM-DD HH:mm:ss')}</span>
+        )
     }, {
         title: '用时',
         dataIndex: 'useTime',
