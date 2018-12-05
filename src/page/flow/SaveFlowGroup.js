@@ -6,7 +6,7 @@ import RepCode from '../../constant/RepCodeContants';
 import InfiniteScroll from 'react-infinite-scroller';
 import Flow from '../../components/flowset';
 import styles from './index.css';
-
+import RequestUtils from '../../util/RequestUtils';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -14,6 +14,12 @@ export default class SaveFlowGroup extends Component {
 
     componentDidMount() {
         console.log("style:", styles);
+        var id=  RequestUtils.getParameter(this.props.location.search,"id");
+        if(id!=null && id>0){
+            this.id=id;
+            this.getFlowGroup();
+        }
+        // console.log(this.props.match.location.search);
         this.getActionList();
         document.addEventListener('mouseup', this.pageMouseUp.bind(this));
         document.addEventListener('mousemove', this.pageMouseMove.bind(this));
@@ -23,7 +29,10 @@ export default class SaveFlowGroup extends Component {
     }
 
     state = {
-        flowGroupName: "",
+        name: "",
+        description:"",
+        flows:[],
+        flowGroup:null,
         selected: {},
         actionPos: {
             x: 0,
@@ -47,6 +56,7 @@ export default class SaveFlowGroup extends Component {
     y = 0;
     actionId = 0;
     isEnterFlow = false;
+    id=0;
     actionMouseDown(e, id, name, className) {
         console.log("e", e);
         this.moving = true;
@@ -84,7 +94,7 @@ export default class SaveFlowGroup extends Component {
             this.moving = false;
             console.log("pageMouseUp");
             console.log("pageX:" + e.pageX + ",pageY:" + e.pageY);
-            this.flow.createAction(e.pageX, e.pageY, this.actionId, this.state.selected.name, this.state.selected.className);
+            this.flow.createAction(e.pageX, e.pageY, this.actionId, -1,this.state.selected.name, this.state.selected.className);
             this.setState({
                 actionStyle: { 'display': 'none' }
             });
@@ -167,13 +177,31 @@ export default class SaveFlowGroup extends Component {
             });
     }
 
+    getFlowGroup(){
+        Request
+            .get("http://localhost:8080/api//flowgroup/get")
+            .query("id="+this.id)
+            .end((err,res)=>{
+                if(!err){
+                    if(res.body.code==RepCode.CODE_OK){
+                        this.setState({
+                            name:res.body.data.name,
+                            flowGroup:res.body.data
+                        });
+                    }
+                }
+            })
+    }
+
     saveFlowGroup() {
         console.log("save");
         var map= this.flow.getFlowMap();
         console.log(map);
         var input={
             name:this.state.flowGroupName,
-            list:map
+            startX:map.startX,
+            startY:map.startY,
+            list:map.list
         };
         console.log(input);
         Request
@@ -193,8 +221,8 @@ export default class SaveFlowGroup extends Component {
 
     }
 
-    setFlowGroupName(e) {
-        this.setState({ flowGroupName: e.target.value });
+    setName(e) {
+        this.setState({ name: e.target.value });
     }
 
     render() {
@@ -235,10 +263,10 @@ export default class SaveFlowGroup extends Component {
                     </InfiniteScroll>
                 </div>
                 <div className="flowWrap" >
-                    <Input placeholder="请输入流程名称" value={this.state.flowGroupName} onChange={this.setFlowGroupName.bind(this)}></Input>
+                    <Input placeholder="请输入流程名称" value={this.state.name} onChange={this.setName.bind(this)}></Input>
                     <Button type="primary" onClick={this.saveFlowGroup.bind(this)}>Primary</Button>
                     <div className="flow" style={{ height: this.state.flowHeight - 30 }}>
-                        <Flow onRef={this.onRef} edit={false} />
+                        <Flow onRef={this.onRef} edit={false} flowGroup={this.state.flowGroup} />
                     </div>
                 </div>
 
