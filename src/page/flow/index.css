@@ -8,7 +8,7 @@
 .actionList{
     background: #fff;
     width: 300px;
-    padding: 0 15px 0 0;
+    margin: 0 10px 0 0;
     overflow:hidden;
     text-overflow:ellipsis;
     white-space: nowrap;

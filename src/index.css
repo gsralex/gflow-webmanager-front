@@ -12,3 +12,26 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+
+::-webkit-scrollbar
+{
+    width: 6px;
+    height: 6px;
+    background-color: #F5F5F5;
+}
+ 
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track
+{
+
+    border-radius: 1px;
+    background-color: #F5F5F5;
+}
+ 
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb
+{
+    border-radius: 1px;
+    background-color:#ccc;
+}
