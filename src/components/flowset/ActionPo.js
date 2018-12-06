@@ -1,5 +1,6 @@
 export default class ActionPo {
 
+    id;
     index;
     actionId;
     next=[];
@@ -7,7 +8,8 @@ export default class ActionPo {
     x=0;
     y=0;
 
-    constructor(index, actionId,x,y) {
+    constructor(id,index, actionId,x,y) {
+        this.id=id;
         this.index = index;
         this.actionId = actionId;
         this.x=x;

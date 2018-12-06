@@ -48,11 +48,12 @@ class Flow extends Component {
     }
 
     setFlow(flowGroup) {
+        this.id=flowGroup.id;
         this.flowGroup = flowGroup;
         console.log("flowgroup", flowGroup);
         for (var i in this.flowGroup.items) {
             var flow = this.flowGroup.items[i];
-            this.createAction(flow.x, flow.y, flow.actionId, flow.index, "123", "123");
+            this.createAction(flow.id,flow.x, flow.y, flow.actionId, flow.index, "123", "123");
         }
         console.log("items", flowGroup.items);
         for (var i in this.flowGroup.items) {
@@ -157,13 +158,18 @@ class Flow extends Component {
     getFlowMap() {
         var list = [];
         this.actionMap.forEach((value, key, mapObj) => {
-            var actionPo = new ActionPo(value.index, value.actionId, value.x, value.y);
+            var actionPo = new ActionPo(value.id,value.index, value.actionId, value.x, value.y);
             value.next.forEach((item, index) => {
                 actionPo.next.push(item.index);
-            })
+            });
+            value.pre.forEach((item,index)=>{
+               actionPo.pre.push(item.index); 
+            });
             list.push(actionPo);
         })
+        console.log(list);
         return {
+            id:this.id,
             startX: this.start.x,
             startY: this.start.y,
             list: list
@@ -219,7 +225,7 @@ class Flow extends Component {
         var height = 20;
         var x = this.selfRect.width / 2 - width / 2;
         var y = 20;
-        this.start = new Action(ActionType.Start, this.currentIndex, 0, x, y, width, height);
+        this.start = new Action(0,ActionType.Start, this.currentIndex, 0, x, y, width, height);
         var gSvg = document.createElementNS(this.ns, "g");
         this.start.svgG = gSvg;
         this.append(gSvg);
@@ -247,7 +253,7 @@ class Flow extends Component {
     }
 
     //创建action
-    createAction(x, y, actionId, index, name, className) {
+    createAction(id,x, y, actionId, index, name, className) {
         //x -= this.selfRect.x;
         //y -= this.selfRect.y;
         if (index != -1) {
@@ -255,7 +261,7 @@ class Flow extends Component {
         } else {
             this.currentIndex++;
         }
-        var action = new Action(ActionType.Action, this.currentIndex, actionId, x, y);
+        var action = new Action(id,ActionType.Action, this.currentIndex, actionId, x, y);
 
         var gSvg = document.createElementNS(this.ns, "g");
         action.svgG = gSvg;

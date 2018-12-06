@@ -1,13 +1,14 @@
 export default class Action {
 
-    startX=0;
-    startY=0;
+    id = 0;
+    startX = 0;
+    startY = 0;
     x = 0;
     y = 0;
     width = 130;
     height = 50;
     svg = null;
-    svgG=null;
+    svgG = null;
     svgHelper = null;
     index = 0;
     pre = [];
@@ -15,7 +16,8 @@ export default class Action {
     type = 0;
     actionId = 0;
 
-    constructor(type, index, actionId, x, y) {
+    constructor(id, type, index, actionId, x, y) {
+        this.id = id;
         this.type = type;
         this.index = index;
         this.actionId = actionId;
