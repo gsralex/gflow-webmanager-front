@@ -1,3 +1,5 @@
+import SVG from 'svg.js';
+
 export default class Line {
 
     ns = 'http://www.w3.org/2000/svg';
@@ -22,6 +24,12 @@ export default class Line {
         lineSvg.setAttributeNS(null, "y1", this.y);
         lineSvg.setAttributeNS(null, "x2", this.x1);
         lineSvg.setAttributeNS(null, "y2", this.y1);
+
+        SVG.on(lineSvg, 'mousedown', (e) => {
+            if (e.button == 0) {
+                console.log("lineclick")
+            }
+        });
         this.svg=lineSvg;
         return lineSvg;
     }

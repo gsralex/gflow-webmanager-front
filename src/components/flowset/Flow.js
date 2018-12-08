@@ -7,9 +7,7 @@ import ActionType from './ActionType';
 import styles from './index.css';
 import ActionPo from './ActionPo';
 import { timingSafeEqual } from 'crypto';
-
-let helperW = 30;
-var helperH = 10;
+import RectContants from '../../constant/RectContants';
 
 class Flow extends Component {
     ns = 'http://www.w3.org/2000/svg';
@@ -30,7 +28,8 @@ class Flow extends Component {
     flowGroup = null;
     componentDidMount() {
         this.div = document.getElementById('svg2');
-        this.selfRect = this.div.getBoundingClientRect();
+        var divWrap=document.getElementById("div-wrap");
+        this.selfRect = divWrap.getBoundingClientRect();
         this.createStart();
         this.props.onRef(this);
         this.edit = this.props.edit;
@@ -48,12 +47,14 @@ class Flow extends Component {
     }
 
     setFlow(flowGroup) {
-        this.id=flowGroup.id;
+        this.id = flowGroup.id;
         this.flowGroup = flowGroup;
+
+        this.updateStart(flowGroup.startX,flowGroup.startY);
         console.log("flowgroup", flowGroup);
         for (var i in this.flowGroup.items) {
             var flow = this.flowGroup.items[i];
-            this.createAction(flow.id,flow.x, flow.y, flow.actionId, flow.index, "123", "123");
+            this.createAction(flow.id, flow.x, flow.y, flow.actionId, flow.index, flow.name, "");
         }
         console.log("items", flowGroup.items);
         for (var i in this.flowGroup.items) {
@@ -122,29 +123,29 @@ class Flow extends Component {
     }
 
     pageMouseUp(e) {
+        var hit = true;
         if (this.lineSelected) {
-            console.log(this.line);
-            if (this.line.nextAction != null) {
-                //判断是否已经加入了连接
-                console.log(this.line.preAction, this.line.nextAction);
-                if (!this.line.preAction.hasNext(this.line.nextAction)) {
-                    console.log("lined");
-                    var xy = PosUtils.getActionUpPos(this.line.nextAction);
-                    this.line.svg.setAttributeNS(null, "x2", xy.x);
-                    this.line.svg.setAttributeNS(null, "y2", xy.y);
-                    console.log(this.line);
-                    this.line.preAction.appendNext(this.line.nextAction);
-                    this.line.nextAction.appendPre(this.line.preAction);
-                    this.lineMap.set(this.line.preAction.index + "_" +
-                        this.line.nextAction.index, this.line);
-                } else {
-                    this.clearLine();
-                }
+            if (this.line.nextAction == null) {
+                hit = false;
+            }
+            if (this.line.preAction.index == this.line.nextAction.index) {
+                hit = false;
+            }
+            if (this.line.preAction.hasNext(this.line.nextAction)) {
+                hit = false;
+            }
+            if (hit) {
+                var xy = PosUtils.getActionUpPos(this.line.nextAction);
+                this.line.svg.setAttributeNS(null, "x2", xy.x);
+                this.line.svg.setAttributeNS(null, "y2", xy.y);
+                this.line.preAction.appendNext(this.line.nextAction);
+                this.line.nextAction.appendPre(this.line.preAction);
+                this.lineMap.set(this.line.preAction.index + "_" +
+                    this.line.nextAction.index, this.line);
             } else {
                 this.clearLine();
             }
         }
-
         this.nodeSelected = false;
         this.lineSelected = false;
     }
@@ -158,18 +159,18 @@ class Flow extends Component {
     getFlowMap() {
         var list = [];
         this.actionMap.forEach((value, key, mapObj) => {
-            var actionPo = new ActionPo(value.id,value.index, value.actionId, value.x, value.y);
+            var actionPo = new ActionPo(value.id, value.index, value.actionId, value.x, value.y);
             value.next.forEach((item, index) => {
                 actionPo.next.push(item.index);
             });
-            value.pre.forEach((item,index)=>{
-               actionPo.pre.push(item.index); 
+            value.pre.forEach((item, index) => {
+                actionPo.pre.push(item.index);
             });
             list.push(actionPo);
         })
         console.log(list);
         return {
-            id:this.id,
+            id: this.id,
             startX: this.start.x,
             startY: this.start.y,
             list: list
@@ -221,11 +222,11 @@ class Flow extends Component {
     }
 
     createStart() {
-        var width = 20;
-        var height = 20;
+        var width = RectContants.START_WIDTH;
+        var height = RectContants.START_HEIGHT;
         var x = this.selfRect.width / 2 - width / 2;
         var y = 20;
-        this.start = new Action(0,ActionType.Start, this.currentIndex, 0, x, y, width, height);
+        this.start = new Action(0, ActionType.Start, this.currentIndex, 0, x, y, width, height);
         var gSvg = document.createElementNS(this.ns, "g");
         this.start.svgG = gSvg;
         this.append(gSvg);
@@ -243,8 +244,8 @@ class Flow extends Component {
         svg.setAttributeNS(null, "index", this.currentIndex);
 
         this.start.svg = svg;
-        var hx = -helperW / 2;
-        var hy = helperH + 2;
+        var hx = -RectContants.HELPER_WIDTH / 2;
+        var hy = RectContants.HELPER_HEIGHT + 2;
         var hSvg = this.createHelper(this.start, hx, hy);
         gSvg.append(hSvg);
         this.saveMap(this.currentIndex, this.start);
@@ -252,16 +253,25 @@ class Flow extends Component {
         this.currentIndex++;
     }
 
+    updateStart(x,y){
+        this.start.x=x;
+        this.start.y=y;
+        this.start.svgG.setAttributeNS(null, "transform", "translate(" + x + "," + y + ")");
+    }
+
     //创建action
-    createAction(id,x, y, actionId, index, name, className) {
-        //x -= this.selfRect.x;
-        //y -= this.selfRect.y;
+    createAction(id, x, y, actionId, index, name, className) {
+        //判断是否超出边界
+        if (x < -RectContants.ACTION_WIDTH / 2 || y < -RectContants.ACTION_HEIGHT / 2) {
+            return;
+        }
+        console.log(123);
         if (index != -1) {
             this.currentIndex = index;
         } else {
             this.currentIndex++;
         }
-        var action = new Action(id,ActionType.Action, this.currentIndex, actionId, x, y);
+        var action = new Action(id, ActionType.Action, this.currentIndex, actionId, x, y);
 
         var gSvg = document.createElementNS(this.ns, "g");
         action.svgG = gSvg;
@@ -292,7 +302,7 @@ class Flow extends Component {
 
 
         //创建helper
-        var hx = action.width / 2 - helperW / 2;
+        var hx = action.width / 2 - RectContants.HELPER_WIDTH / 2;
         var hy = action.height + 2;
         var hSvg = this.createHelper(action, hx, hy);
         action.svgHelper = hSvg;
@@ -301,13 +311,13 @@ class Flow extends Component {
     }
 
     bindMoveEvent(action) {
-        var node = action.svgG;
-        SVG.on(node, 'mousedown', (e) => {
+        var g = action.svgG;
+        SVG.on(g, 'mousedown', (e) => {
             if (e.button != 0) {
                 return;
             }
             this.nodeSelected = true;
-            this.moveAction = this.getActionByNode(node);
+            this.moveAction = this.getActionByNode(g);
             this.clickX = e.pageX;
             this.clickY = e.pageY;
             this.moveAction.startX = this.moveAction.x;
@@ -319,8 +329,8 @@ class Flow extends Component {
 
     createHelper(action, x, y) {
         var helper = document.createElementNS(this.ns, 'rect');
-        helper.setAttributeNS(null, 'width', helperW);
-        helper.setAttributeNS(null, 'height', helperH);
+        helper.setAttributeNS(null, 'width', RectContants.HELPER_WIDTH);
+        helper.setAttributeNS(null, 'height', RectContants.HELPER_HEIGHT);
         console.log("action", action);
         var downXy = PosUtils.getActionDownPos(action);
         helper.setAttributeNS(null, "x", x);
@@ -356,9 +366,11 @@ class Flow extends Component {
 
     render() {
         return (
-            <svg id="svg2" style={{ width: '100%', height: '100%', 'user-select': 'none' }}>
+            <div id="div-wrap" style={{ width: '1100px', height: '100%', overflow: 'scroll' }}>
+                <svg id="svg2" style={{ width: '10000px', height: '1000px', 'user-select': 'none' }}>
 
-            </svg>
+                </svg>
+            </div>
         );
     }
 }

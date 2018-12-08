@@ -88,7 +88,8 @@ export default class FlowGroupList extends Component {
             <span>
                 <Link to={{
                     pathname: "/saveflowgroup",
-                    query: { id: record.id }
+                    search:'?id='+record.id,
+                    // query: { id:'1'}
                 }}>编辑</Link>
                 <Divider type="vertical" />
                 <a href="javascript:;">删除</a>
