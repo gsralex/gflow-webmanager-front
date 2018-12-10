@@ -69,7 +69,7 @@ export default class JobGroupList extends Component {
             <span>
                 <Link to={{
                     pathname: "/jobgroupdetail",
-                    query: { id: record.id }
+                    search:'?id='+record.id
                 }}>详细</Link>
             </span>
         ),

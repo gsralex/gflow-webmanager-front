@@ -28,11 +28,14 @@ class App extends Component {
           <Menu
             theme="dark"
             mode="horizontal"
-            defaultSelectedKeys={['2']}
+            defaultSelectedKeys={['1']}
             style={{ lineHeight: '64px' }}
           >
             <Menu.Item key="1">  <Link to='/actionlist'>
               <Icon type="desktop" />Action</Link>
+            </Menu.Item>
+            <Menu.Item key="2">  <Link to='/actiontaglist'>
+              <Icon type="desktop" />ActionTag</Link>
             </Menu.Item>
             <Menu.Item key="6">
               <Link to="/jobgrouplist">

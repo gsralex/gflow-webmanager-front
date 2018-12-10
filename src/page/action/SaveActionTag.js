@@ -1,61 +1,37 @@
 import React, { Component } from 'react';
-import { Form, Input, Select, message, Button } from 'antd';
+import TextArea from 'antd/lib/input/TextArea';
+import { Form, Input,  Select, message, Button } from 'antd';
 import Request from 'superagent';
 
 import RepCode from '../../constant/RepCodeContants';
 const FormItem = Form.Item;
-const Option = Select.Option;
 
-class SaveAction extends Component {
-
+class SaveActionTag extends Component {
     id = 0;
     componentDidMount() {
         // To disabled submit button at the beginning.
         // this.props.form.validateFields();
-        this.getActionTag();
         this.id = this.props.id;
         if (this.id > 0) {
             this.getData();
         }
     }
 
-    state = {
-        actionTags: []
-    }
 
     getData() {
         Request
-            .get('http://dev.gsralex.com:8080/api/action/get')
+            .get('http://dev.gsralex.com:8080/api/actiontag/get')
             .query('id=' + this.id)
             .end((err, res) => {
                 if (res.body.code == RepCode.CODE_OK) {
                     let data = res.body.data;
                     this.props.form.setFieldsValue({
                         name: data.name,
-                        className: data.className,
-                        tagId:data.tagId
+                        servers: data.servers
                     });
                 }
             });
     }
-
-    getActionTag() {
-        Request
-            .get("http://dev.gsralex.com:8080/api/actiontag/list")
-            .query("pageSize=100")
-            .query("pageIndex=1")
-            .end((err, res) => {
-                if (!err) {
-                    if (res.body.code == RepCode.CODE_OK) {
-                        console.log("data", res.body.data);
-                        this.setState({
-                            actionTags: res.body.data
-                        });
-                    }
-                }
-            });
-    }
-
 
 
     handleSubmit = (e) => {
@@ -63,10 +39,9 @@ class SaveAction extends Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 Request
-                    .post('http://dev.gsralex.com:8080/api/action/save')
+                    .post('http://dev.gsralex.com:8080/api/actiontag/save')
                     .send('name=' + values.name)
-                    .send('className=' + values.className)
-                    .send("tagId="+values.tagId)
+                    .send('servers=' + values.servers)
                     .send('id=' + this.id)
                     .end((err, res) => {
                         if (!err) {
@@ -112,7 +87,6 @@ class SaveAction extends Component {
                 },
             },
         };
-        
         return (
             <Form onSubmit={this.handleSubmit}>
                 <FormItem
@@ -121,7 +95,7 @@ class SaveAction extends Component {
                 >
 
                     {getFieldDecorator('name', {
-                        rules: [{ required: true, message: '请输入action名称' }],
+                        rules: [{ required: true, message: '请输入标签组名称' }],
                     })(
                         <Input />
                     )}
@@ -129,26 +103,12 @@ class SaveAction extends Component {
                 </FormItem>
                 <FormItem
                     {...formItemLayout}
-                    label="类名"
+                    label="服务器列表"
                 >
-                    {getFieldDecorator('className', {
-                        rules: [{ required: true, message: '请输入类名' }],
+                    {getFieldDecorator('servers', {
+                        rules: [{ required: true, message: '请输入服务器列表' }],
                     })(
-                        <Input placeholder="例如:com.gsralex.gflow.DemoProcess" />
-                    )}
-                </FormItem>
-                <FormItem
-                    {...formItemLayout}
-                    label="标签id"
-                >
-                    {getFieldDecorator('tagId', {
-                        initialValue: 0,
-                        rules: [{ required: true, message: '请选择action标签' }],
-                    })(
-                        <Select defaultValue={0}>
-                            <Option value={0}>请选择</Option>
-                            {this.state.actionTags.map(action => <Option value={action.id}>{action.name}</Option>)}
-                        </Select>
+                       <TextArea style={{height:'150px'}} placeholder="例如:127.0.0.1:8080,127.0.0.1:8081"></TextArea>
                     )}
                 </FormItem>
 
@@ -159,5 +119,7 @@ class SaveAction extends Component {
         );
     }
 }
-const SaveActionForm = Form.create()(SaveAction);
-export default SaveActionForm;
+
+
+const SaveActionTagForm = Form.create()(SaveActionTag);
+export default SaveActionTagForm;

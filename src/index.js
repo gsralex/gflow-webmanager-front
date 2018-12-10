@@ -6,6 +6,7 @@ import { LocaleProvider,Icon,Spin } from 'antd';
 import * as serviceWorker from './serviceWorker';
 import { Switch, HashRouter, Route, Link, BrowserRouter as Router } from 'react-router-dom'
 import ActionList from './page/action/ActionList';
+import ActionTagList from './page/action/ActionTagList';
 import JobGroupList from './page/job/JobGroupList';
 import JobGroupDetail from './page/job/JobGroupDetail';
 import FlowGroupList from './page/flow/FlowGroupList';
@@ -22,6 +23,7 @@ ReactDOM.render(
         <LocaleProvider locale={zhCN}>
             <App>
                 <Route path="/actionlist" component={ActionList} />
+                <Route path="/actiontaglist" component={ActionTagList} />
                 <Route path="/jobgrouplist" component={JobGroupList} />
                 <Route path="/jobgroupdetail" component={JobGroupDetail} />
                 <Route path="/flowgrouplist" component={FlowGroupList} />

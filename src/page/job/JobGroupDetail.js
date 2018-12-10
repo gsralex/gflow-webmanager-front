@@ -7,6 +7,7 @@ import RepCode from '../../constant/RepCodeContants';
 import { Record } from 'immutable';
 import moment from "moment";
 import StatusLabel from "../../constant/StatusLabel"
+import RequestUtils from '../../util/RequestUtils';
 
 const { Description } = DescriptionList;
 
@@ -59,12 +60,11 @@ export default class JobGroupDetail extends Component {
 
     componentDidMount() {
         console.log("props",this.props);
-        this.id = this.props.location.query.id;
-        console.log("id", this.id);
-        if (this.id > 0) {
+        this.id = RequestUtils.getParameter(this.props.location.search, "id");
+        if (this.id != null && this.id > 0) {
             this.getData();
             this.getJobData();
-        }  
+        }
     }
 
 
@@ -109,13 +109,13 @@ export default class JobGroupDetail extends Component {
         return (
             <div>
                 <Card bordered={false}>
-                    <DescriptionList size="large" title="job组详细" style={{ marginBottom: 10 }}>
-                        <Description term="取货单号">1000000000</Description>
-                        <Description term="状态">已取货</Description>
+                    <DescriptionList size="large" title="job组详细" style={{ marginBottom: 20 }}>
+                        <Description term="订单id">1000000000</Description>
+                        <Description term="开始">已取货</Description>
                         <Description term="销售单号">1234123421</Description>
                         <Description term="子订单">3214321432</Description>
                     </DescriptionList>
-                    <DescriptionList size="large" title="job组详细" style={{ marginBottom: 10 }}>
+                    <DescriptionList size="large" title="job组详细" style={{ marginBottom: 20 }}>
                         <Description term="取货单号">1000000000</Description>
                         <Description term="状态">已取货</Description>
                         <Description term="销售单号">1234123421</Description>

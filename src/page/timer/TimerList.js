@@ -185,6 +185,7 @@ export default class TimerList extends Component {
                         onOk={this.hideSave.bind(this)}
                         onCancel={this.hideSave.bind(this)}
                         destroyOnClose={true}
+                        footer={false}
                     >
                         <SaveTimerForm id={this.state.id}
                             store={store} />

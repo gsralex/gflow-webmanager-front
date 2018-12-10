@@ -28,7 +28,7 @@ class Flow extends Component {
     flowGroup = null;
     componentDidMount() {
         this.div = document.getElementById('svg2');
-        var divWrap=document.getElementById("div-wrap");
+        var divWrap = document.getElementById("div-wrap");
         this.selfRect = divWrap.getBoundingClientRect();
         this.createStart();
         this.props.onRef(this);
@@ -50,7 +50,7 @@ class Flow extends Component {
         this.id = flowGroup.id;
         this.flowGroup = flowGroup;
 
-        this.updateStart(flowGroup.startX,flowGroup.startY);
+        this.updateStart(flowGroup.startX, flowGroup.startY);
         console.log("flowgroup", flowGroup);
         for (var i in this.flowGroup.items) {
             var flow = this.flowGroup.items[i];
@@ -123,36 +123,36 @@ class Flow extends Component {
     }
 
     pageMouseUp(e) {
-        var hit = true;
         if (this.lineSelected) {
             if (this.line.nextAction == null) {
-                hit = false;
+                this.clearLine();
+                return;
             }
             if (this.line.preAction.index == this.line.nextAction.index) {
-                hit = false;
+                this.clearLine();
+                return;
             }
             if (this.line.preAction.hasNext(this.line.nextAction)) {
-                hit = false;
-            }
-            if (hit) {
-                var xy = PosUtils.getActionUpPos(this.line.nextAction);
-                this.line.svg.setAttributeNS(null, "x2", xy.x);
-                this.line.svg.setAttributeNS(null, "y2", xy.y);
-                this.line.preAction.appendNext(this.line.nextAction);
-                this.line.nextAction.appendPre(this.line.preAction);
-                this.lineMap.set(this.line.preAction.index + "_" +
-                    this.line.nextAction.index, this.line);
-            } else {
                 this.clearLine();
+                return;
             }
+            var xy = PosUtils.getActionUpPos(this.line.nextAction);
+            this.line.svg.setAttributeNS(null, "x2", xy.x);
+            this.line.svg.setAttributeNS(null, "y2", xy.y);
+            this.line.preAction.appendNext(this.line.nextAction);
+            this.line.nextAction.appendPre(this.line.preAction);
+            this.lineMap.set(this.line.preAction.index + "_" +
+            this.line.nextAction.index, this.line);
         }
-        this.nodeSelected = false;
         this.lineSelected = false;
+        this.nodeSelected=false;
     }
 
     clearLine() {
         this.div.removeChild(this.line.svg);
         this.line = null;
+        this.lineSelected = false;
+        this.nodeSelected=false;
     }
 
 
@@ -253,9 +253,9 @@ class Flow extends Component {
         this.currentIndex++;
     }
 
-    updateStart(x,y){
-        this.start.x=x;
-        this.start.y=y;
+    updateStart(x, y) {
+        this.start.x = x;
+        this.start.y = y;
         this.start.svgG.setAttributeNS(null, "transform", "translate(" + x + "," + y + ")");
     }
 

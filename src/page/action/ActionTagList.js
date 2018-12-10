@@ -1,34 +1,17 @@
 import React, { Component } from 'react';
-import { Table, Divider, Layout, Input, Button, Modal, message, Icon, Spin, Select } from 'antd';
+import { Table, Divider, Layout, Input, Button, Modal, message, Icon, Spin } from 'antd';
 import { Resizable } from 'react-resizable';
 import Request from 'superagent';
 import RepCode from '../../constant/RepCodeContants';
-import SaveActionForm from './SaveAction';
+import StatusLabel from "../../constant/StatusLabel";
+import SaveActionTagForm from './SaveActionTag';
 import { createStore } from 'redux'
 import SaveOk from '../reducer/SaveReducer'
-import StatusLabel from "../../constant/StatusLabel"
-const Option = Select.Option;
-
 const store = createStore(SaveOk)
-const ResizeableTitle = (props) => {
-    const { onResize, width, ...restProps } = props;
 
-    if (!width) {
-        return <th {...restProps} />;
-    }
-
-    return (
-        <Resizable width={width} height={0} onResize={onResize}>
-            <th {...restProps} />
-        </Resizable>
-    );
-};
-
-export default class ActionList extends Component {
-
+export default class ActionTagList extends Component {
     componentDidMount() {
         this.getData(1);
-        this.getActionTag();
         store.subscribe(this.saveActionOk.bind(this));
     }
 
@@ -41,45 +24,11 @@ export default class ActionList extends Component {
         }
     }
 
-
-    showUpdate(id) {
-        this.setState({
-            id: id,
-            title: '修改Action',
-            visible: true
-        });
-
-    }
-    showRemove(id, name, className) {
-        Modal.confirm({
-            title: '确定要删除吗？',
-            content: "id：" + id + "，名称：" + name + " 类名：" + className,
-            okText: '确认',
-            cancelText: '取消',
-            onOk: () => { this.remove(id) }
-        });
-    }
-    remove(id) {
-        Request
-            .post('http://dev.gsralex.com:8080/api/action/remove')
-            .send('id=' + id)
-            .end((err, res) => {
-                if (res.body.code == RepCode.CODE_OK) {
-                    message.success("删除成功");
-                    this.getData(this.state.pageIndex);
-                }
-            });
-    }
-
     state = {
         id: 0,
+        name: "",
         title: '',
         visible: false,
-        name: '',
-        className: '',
-        tagId:0,
-        loading: false,
-        actionTags: [],
         columns: [{
             title: 'id',
             dataIndex: 'id',
@@ -89,13 +38,9 @@ export default class ActionList extends Component {
             dataIndex: 'name',
             width: 100,
         }, {
-            title: '类名',
-            dataIndex: 'className',
+            title: '服务器列表',
+            dataIndex: 'servers',
             width: 300,
-        },{
-            title: 'tagId',
-            dataIndex: 'tagName',
-            width: 100,
         }, {
             title: '创建时间',
             width: 100,
@@ -116,38 +61,26 @@ export default class ActionList extends Component {
                 <span>
                     <a href="javascript:;" onClick={() => { this.showUpdate(record.id) }}>编辑</a>
                     <Divider type="vertical" />
-                    <a href="javascript:;" onClick={() => { this.showRemove(record.id, record.name, record.className) }}>删除</a>
+                    <a href="javascript:;" onClick={() => { this.showRemove(record.id, record.name) }}>删除</a>
                 </span>
             ),
         }],
-        dataSource: {},
         pageSize: 30,
-        pageIndex: 1
-    };
-
-    components = {
-        header: {
-            cell: ResizeableTitle,
-        },
-    };
-
+        pageIndex: 1,
+        dataSource: {}
+    }
 
     setName(e) {
-        this.setState({ name: e.target.value });
+        this.setState({
+            name: e.target.value
+        });
     }
 
-    setClassName(e) {
-        this.setState({ className: e.target.value });
-    }
-
-    setTagId(value){
-        this.setState({ tagId: value });
-    }
 
     showSave() {
         this.setState({
             id: 0,
-            title: "添加Action",
+            title: "添加ActionTag",
             visible: true
         });
     }
@@ -158,6 +91,36 @@ export default class ActionList extends Component {
         });
     }
 
+    showUpdate(id) {
+        this.setState({
+            id: id,
+            title: '修改ActionTag',
+            visible: true
+        });
+
+    }
+
+    showRemove(id, name) {
+        Modal.confirm({
+            title: '确定要删除吗？',
+            content: "id：" + id + "，名称：" + name,
+            okText: '确认',
+            cancelText: '取消',
+            onOk: () => { this.remove(id) }
+        });
+    }
+
+    remove(id) {
+        Request
+            .post('http://dev.gsralex.com:8080/api/actiontag/remove')
+            .send('id=' + id)
+            .end((err, res) => {
+                if (res.body.code == RepCode.CODE_OK) {
+                    message.success("删除成功");
+                    this.getData(this.state.pageIndex);
+                }
+            });
+    }
 
     handleResize = index => (e, { size }) => {
         this.setState(({ columns }) => {
@@ -169,24 +132,7 @@ export default class ActionList extends Component {
             return { columns: nextColumns };
         });
     };
-
-
-    getActionTag() {
-        Request
-            .get("http://dev.gsralex.com:8080/api/actiontag/list")
-            .query("pageSize=100")
-            .query("pageIndex=1")
-            .end((err, res) => {
-                if (!err) {
-                    if (res.body.code == RepCode.CODE_OK) {
-                        console.log("data", res.body.data);
-                        this.setState({
-                            actionTags: res.body.data
-                        });
-                    }
-                }
-            });
-    }
+    
 
     getData(pageIndex) {
         console.log("pageIndex", pageIndex);
@@ -195,10 +141,8 @@ export default class ActionList extends Component {
             pageIndex: pageIndex
         }, () => {
             Request
-                .get('http://dev.gsralex.com:8080/api/action/list')
+                .get('http://dev.gsralex.com:8080/api/actiontag/list')
                 .query('name=' + this.state.name)
-                .query('className=' + this.state.className)
-                .query('tagId='+this.state.tagId)
                 .query('pageSize=' + this.state.pageSize)
                 .query('pageIndex=' + this.state.pageIndex)
                 .end((err, res) => {
@@ -221,7 +165,6 @@ export default class ActionList extends Component {
                     }
                 });
         });
-
     }
 
     render() {
@@ -238,17 +181,7 @@ export default class ActionList extends Component {
             <div>
                 <div style={{ marginBottom: 16 }}>
                     <span style={{ marginRight: 20 }}>
-                        <span>tagid：</span>
-                        <Select defaultValue={0} value={this.state.tagId} onChange={this.setTagId.bind(this)}>
-                            <Option value={0}>请选择</Option>
-                            {this.state.actionTags.map(action => <Option value={action.id}>{action.name}</Option>)}
-                        </Select>
-                    </span>
-                    <span style={{ marginRight: 20 }}>
                         <span>名称：</span>  <Input placeholder="请输入名称" value={this.state.name} onChange={this.setName.bind(this)} style={{ width: 200 }} /></span>
-                    <span style={{ marginRight: 20 }}>
-                        <span>类名：</span>  <Input placeholder="请输入类名" value={this.state.className} onChange={this.setClassName.bind(this)} style={{ width: 200 }} />
-                    </span>
                     <span>
                         <Button type="primary" onClick={() => this.getData(1)}>查询</Button>
                     </span>
@@ -264,7 +197,7 @@ export default class ActionList extends Component {
                         destroyOnClose={true}
                         footer={false}
                     >
-                        <SaveActionForm id={this.state.id}
+                        <SaveActionTagForm id={this.state.id}
                             store={store} />
                     </Modal>
                 </div>
@@ -298,4 +231,3 @@ export default class ActionList extends Component {
         );
     }
 }
-
