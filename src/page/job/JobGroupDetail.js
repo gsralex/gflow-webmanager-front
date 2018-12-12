@@ -109,17 +109,15 @@ export default class JobGroupDetail extends Component {
         return (
             <div>
                 <Card bordered={false}>
-                    <DescriptionList size="large" title="job组详细" style={{ marginBottom: 20 }}>
-                        <Description term="订单id">1000000000</Description>
-                        <Description term="开始">已取货</Description>
-                        <Description term="销售单号">1234123421</Description>
-                        <Description term="子订单">3214321432</Description>
-                    </DescriptionList>
-                    <DescriptionList size="large" title="job组详细" style={{ marginBottom: 20 }}>
-                        <Description term="取货单号">1000000000</Description>
-                        <Description term="状态">已取货</Description>
-                        <Description term="销售单号">1234123421</Description>
-                        <Description term="子订单">3214321432</Description>
+                    <DescriptionList size="large" title="流程组详细" col="4" style={{ marginBottom: 20}}>
+                        <Description term="流程组id">{this.state.jobGroup.id}</Description>
+                        <Description term="流程名称">{this.state.jobGroup.name}</Description>
+                        <Description term="流程描述">{this.state.jobGroup.description}</Description>
+                        <Description term="状态">{StatusLabel.getJobGroupStatus(this.state.jobGroup.status)}</Description>
+                        <Description term="开始时间">{StatusLabel.formatTime(this.state.jobGroup.startTime)}</Description>
+                        <Description term="结束时间">{StatusLabel.formatTime(this.state.jobGroup.endTime)}</Description>
+                        <Description term="用时">{StatusLabel.getUseTime(this.state.jobGroup.startTime, this.state.jobGroup.endTime)}</Description>
+                    
                     </DescriptionList>
                 </Card>
                 <Tabs defaultActiveKey="1" onChange={this.tabChange}>

@@ -9,6 +9,7 @@ import ActionList from './page/action/ActionList';
 import ActionTagList from './page/action/ActionTagList';
 import JobGroupList from './page/job/JobGroupList';
 import JobGroupDetail from './page/job/JobGroupDetail';
+import JobList from './page/job/JobList';
 import FlowGroupList from './page/flow/FlowGroupList';
 import SaveFlowGroup from './page/flow/SaveFlowGroup';
 import TimerList from './page/timer/TimerList';
@@ -26,6 +27,7 @@ ReactDOM.render(
                 <Route path="/actiontaglist" component={ActionTagList} />
                 <Route path="/jobgrouplist" component={JobGroupList} />
                 <Route path="/jobgroupdetail" component={JobGroupDetail} />
+                <Route path="/joblist" component={JobList} />
                 <Route path="/flowgrouplist" component={FlowGroupList} />
                 <Route path="/saveflowgroup" component={SaveFlowGroup} />
                 <Route path="/timerlist" component={TimerList} />

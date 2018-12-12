@@ -47,13 +47,13 @@ export default class JobGroupList extends Component {
         title: '开始时间',
         width: 200,
         render: (text, record) => (
-            <span>{moment(record.startTime).format('YYYY-MM-DD HH:mm:ss')}</span>
+            <span>{StatusLabel.formatTime(record.startTime)}</span>
         )
     }, {
         title: '结束时间',
         width: 200,
         render: (text, record) => (
-            <span>{moment(record.endTime).format('YYYY-MM-DD HH:mm:ss')}</span>
+            <span>{StatusLabel.formatTime(record.endTime)}</span>
         )
     }, {
         title: '用时',
@@ -221,6 +221,9 @@ export default class JobGroupList extends Component {
                         <Button type="primary" onClick={() => this.getData(1)}>查询</Button>
                     </span>
 
+                </div>
+                <div style={{ marginBottom: 16 }}>
+                    <Button type="primary" onClick={() => { this.showSave() }}>添加+</Button>
                 </div>
                 <Table
                     bordered

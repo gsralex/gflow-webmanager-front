@@ -7,7 +7,7 @@ export default class StatusLabel {
             var useTime = endTime - startTime;
             if (useTime > 1000 * 60) {//大于1分钟
                 console.log(useTime);
-                return (useTime / (1000 * 60)).toFixed(0) + "分" + ((useTime/1000).toFixed(0) %  60) + "秒";
+                return (useTime / (1000 * 60)).toFixed(0) + "分" + ((useTime / 1000).toFixed(0) % 60) + "秒";
             } else {
                 return (useTime / 1000).toFixed(1) + "秒";
             }
@@ -16,7 +16,10 @@ export default class StatusLabel {
     }
 
     static formatTime(unixTime) {
-        return moment(unixTime).format('YYYY-MM-DD HH:mm:ss')
+        if (unixTime!= undefined && unixTime !="") {
+            return moment(unixTime).format('YYYY-MM-DD HH:mm:ss')
+        }
+        return "暂无";
     }
 
     static getJobGroupStatus(status) {

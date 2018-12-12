@@ -6,7 +6,7 @@ import responsive from './responsive';
 
 const Description = ({ term, column, children, ...restProps }) => (
   <Col {...responsive[column]} {...restProps}>
-    {term && <div className={styles.term}>{term}</div>}
+    {term && <div className={styles.term} style={{margin:'10px 0 0 0'}}>{term}</div>}
     {children !== null && children !== undefined && <div className={styles.detail}>{children}</div>}
   </Col>
 );

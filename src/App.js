@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 
 const { Header, Content, Footer, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
+const MenuItemGroup = Menu.ItemGroup;
 class App extends Component {
 
   state = {
@@ -31,20 +32,26 @@ class App extends Component {
             defaultSelectedKeys={['1']}
             style={{ lineHeight: '64px' }}
           >
-            <Menu.Item key="1">  <Link to='/actionlist'>
-              <Icon type="desktop" />Action</Link>
-            </Menu.Item>
-            <Menu.Item key="2">  <Link to='/actiontaglist'>
-              <Icon type="desktop" />ActionTag</Link>
-            </Menu.Item>
-            <Menu.Item key="6">
-              <Link to="/jobgrouplist">
-                <Icon type="check-square" />Job</Link>
-            </Menu.Item>
+            <SubMenu title={<span className="submenu-title-wrapper"><Icon type="setting" />Action</span>}>
+              <Menu.Item key="1">
+                <Link to='/actionlist'>
+                  Action</Link></Menu.Item>
+              <Menu.Item key="2">
+                <Link to='/actiontaglist'>
+                  ActionTag</Link></Menu.Item>
+            </SubMenu>
+            <SubMenu title={<span className="submenu-title-wrapper"><Icon type="check-square" />Job</span>}>
+              <Menu.Item key="3">
+                <Link to='/jobgrouplist'>
+                  JobGroup</Link></Menu.Item>
+              <Menu.Item key="4">
+                <Link to='/joblist'>
+                  Job</Link></Menu.Item>
+            </SubMenu>
             <Menu.Item key="7">
               <Link to="/flowgrouplist">
                 <Icon type="cluster" />Flow</Link>
-              </Menu.Item>
+            </Menu.Item>
             <Menu.Item key="8">
               <Link to='/timerlist'>
                 <Icon type="clock-circle" />Timer</Link>
