@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Table, Divider, Switch, Layout, Input, Button, Modal, message, Icon, Spin } from 'antd';
 import Request from 'superagent';
 import RepCode from '../../constant/RepCodeContants';
-import Labels from './Labels'
 import SaveTimerForm from './SaveTimer';
 import { createStore } from 'redux'
 import SaveOk from '../reducer/SaveReducer'
@@ -42,13 +41,13 @@ export default class TimerList extends Component {
         title: '类型',
         width: 100,
         render: (text, record) => (
-            <span>{Labels.getTimeType(record.timeType, record.time, record.interval)}</span>
+            <span>{record.time} 执行</span>
         )
     }, {
         title: '启用',
         width: 100,
         render: (text, record) => (
-            <Switch checked={record.active} onChange={() => { this.updateActive(record.id) }} checkedChildren="启用" unCheckedChildren="禁用" />
+            <Switch checked={record.active} onChange={() => { this.updateActive(record) }} checkedChildren="启用" unCheckedChildren="禁用" />
         )
     }, {
         title: '操作',
@@ -122,18 +121,13 @@ export default class TimerList extends Component {
     }
 
 
-    updateActive(id) {
-        var active;
-        for (var item of this.state.dataSource.data) {
-            if (item.id == id) {
-                item.active = !item.active;
-                active = item.active;
-            }
-        }
+    updateActive(record) {
+        var id=record.id;
+        record.active=!record.active;
         Request
             .post('http://dev.gsralex.com:8080/api/timer/updateActive')
             .send('id=' + id)
-            .send('active=' + active)
+            .send('active=' + record.active)
             .end((err, res) => {
                 if (!err) {
                     if (res.body.code == RepCode.CODE_OK) {

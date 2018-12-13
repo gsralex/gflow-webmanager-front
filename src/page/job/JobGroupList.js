@@ -32,26 +32,21 @@ export default class JobGroupList extends Component {
     columns = [{
         title: 'id',
         dataIndex: 'id',
-        width: 100,
     }, {
         title: '流程名称',
         dataIndex: 'name',
-        width: 200,
     }, {
         title: '状态',
-        width: 100,
         render: (text, record) => (
             <span>{StatusLabel.getJobGroupStatus(record.status)}</span>
         )
     }, {
         title: '开始时间',
-        width: 200,
         render: (text, record) => (
             <span>{StatusLabel.formatTime(record.startTime)}</span>
         )
     }, {
         title: '结束时间',
-        width: 200,
         render: (text, record) => (
             <span>{StatusLabel.formatTime(record.endTime)}</span>
         )
@@ -166,7 +161,7 @@ export default class JobGroupList extends Component {
             pageIndex: pageIndex
         }, () => {
             Request
-                .get('http://dev.gsralex.com:8080/api/jobgroup/list')
+                .get('http://dev.gsralex.com:8080/api/jobgroup/querylist')
                 .query('flowGroupId=' + this.state.flowGroupId)
                 .query('date=' + this.state.date)
                 .query('pageSize=' + this.state.pageSize)
