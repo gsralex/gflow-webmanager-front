@@ -112,7 +112,7 @@ export default class ActionTagList extends Component {
 
     remove(id) {
         Request
-            .post('http://dev.gsralex.com:8080/api/actiontag/remove')
+            .post('http://127.0.0.1:8080/api/actiontag/remove')
             .send('id=' + id)
             .end((err, res) => {
                 if (res.body.code == RepCode.CODE_OK) {
@@ -141,7 +141,7 @@ export default class ActionTagList extends Component {
             pageIndex: pageIndex
         }, () => {
             Request
-                .get('http://dev.gsralex.com:8080/api/actiontag/list')
+                .get('http://127.0.0.1:8080/api/actiontag/list')
                 .query('name=' + this.state.name)
                 .query('pageSize=' + this.state.pageSize)
                 .query('pageIndex=' + this.state.pageIndex)

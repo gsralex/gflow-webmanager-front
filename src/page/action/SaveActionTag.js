@@ -20,7 +20,7 @@ class SaveActionTag extends Component {
 
     getData() {
         Request
-            .get('http://dev.gsralex.com:8080/api/actiontag/get')
+            .get('http://127.0.0.1:8080/api/actiontag/get')
             .query('id=' + this.id)
             .end((err, res) => {
                 if (res.body.code == RepCode.CODE_OK) {
@@ -39,7 +39,7 @@ class SaveActionTag extends Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 Request
-                    .post('http://dev.gsralex.com:8080/api/actiontag/save')
+                    .post('http://127.0.0.1:8080/api/actiontag/save')
                     .send('name=' + values.name)
                     .send('servers=' + values.servers)
                     .send('id=' + this.id)
