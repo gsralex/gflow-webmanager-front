@@ -168,7 +168,7 @@ export default class SaveFlowGroup extends Component {
 
     getActionData(callback) {
         Request
-            .get('http://localhost:8080/api/action/list')
+            .get('http://127.0.0.1:8080/api/action/list')
             .query('className=' + this.state.actionQuery)
             .query('pageSize=' + this.state.pageSize)
             .query('pageIndex=' + this.state.pageIndex)
@@ -189,7 +189,7 @@ export default class SaveFlowGroup extends Component {
 
     getFlowGroup() {
         Request
-            .get("http://localhost:8080/api//flowgroup/get")
+            .get("http://127.0.0.1:8080/api//flowgroup/get")
             .query("id=" + this.id)
             .end((err, res) => {
                 if (!err) {
@@ -215,7 +215,7 @@ export default class SaveFlowGroup extends Component {
             list: map.list
         };
         Request
-            .post('http://localhost:8080/api/flowgroup/save')
+            .post('http://127.0.0.1:8080/api/flowgroup/save')
             .set('Content-Type', 'application/json')
             .send(input)
             .end((err, res) => {
