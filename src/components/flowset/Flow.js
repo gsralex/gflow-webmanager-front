@@ -101,29 +101,30 @@ class Flow extends Component {
             this.line.svg.setAttributeNS(null, "x2", this.line.x + x);
             this.line.svg.setAttributeNS(null, "y2", this.line.y + y);
             var xy = this.convertPageXy(e.pageX, e.pageY);
-            this.actionMouseMove(xy.x, xy.y);
+            //this.actionMouseMove(xy.x, xy.y);
         }
         e.stopPropagation();
     }
 
-    actionMouseMove(x, y) {
-        var hit = false;
-        this.actionMap.forEach((value, key, mapObj) => {
-            if (x >= value.x && x <= value.x + value.width
-                && y >= value.y && y <= value.y + value.height) {
-                // value.svg.setAttributeNS(null, "class", "flow-action flow-action-selected");
-                this.line.nextAction = value;
-                hit = true;
-                return;
-            }
-        })
-        if (!hit) {
-            this.line.nextAction = null;
-        }
-    }
+    // actionMouseMove(x, y) {
+    //     var hit = false;
+    //     this.actionMap.forEach((value, key, mapObj) => {
+    //         if (x >= value.x && x <= value.x + value.width
+    //             && y >= value.y && y <= value.y + value.height) {
+    //             // value.svg.setAttributeNS(null, "class", "flow-action flow-action-selected");
+    //             this.line.nextAction = value;
+    //             hit = true;
+    //             return;
+    //         }
+    //     })
+    //     if (!hit) {
+    //         this.line.nextAction = null;
+    //     }
+    // }
 
     pageMouseUp(e) {
         if (this.lineSelected) {
+            console.log("789");
             if (this.line.nextAction == null) {
                 this.clearLine();
                 return;
@@ -265,7 +266,6 @@ class Flow extends Component {
         if (x < -RectContants.ACTION_WIDTH / 2 || y < -RectContants.ACTION_HEIGHT / 2) {
             return;
         }
-        console.log(123);
         if (index != -1) {
             this.currentIndex = index;
         } else {
@@ -322,6 +322,17 @@ class Flow extends Component {
             this.clickY = e.pageY;
             this.moveAction.startX = this.moveAction.x;
             this.moveAction.startY = this.moveAction.y;
+        });
+
+        SVG.on(g,'mouseup',(e)=>{
+            console.log("mouseup.123");
+            if (this.lineSelected) {
+                console.log("mouseup.456");
+                var action= this.getActionByNode(g);
+                console.log("action",action);
+                this.line.nextAction = action;
+            
+            }
         });
 
     }

@@ -26,7 +26,7 @@ class SaveTimer extends Component {
 
     getData() {
         Request
-            .get('http://127.0.0.1:8080/api/timer/get')
+            .get(RepCode.URL+'/api/timer/get')
             .query('id=' + this.id)
             .end((err, res) => {
                 if (res.body.code == RepCode.CODE_OK) {
@@ -46,7 +46,7 @@ class SaveTimer extends Component {
 
     getFlowGroupList() {
         Request
-            .get('http://127.0.0.1:8080/api/flowgroup/select')
+            .get(RepCode.URL+'/api/flowgroup/select')
             .end((err, res) => {
                 this.setState({
                     flowGroupList: res.body.data
@@ -71,7 +71,7 @@ class SaveTimer extends Component {
             if (!err) {
                 console.log(values.active);
                 Request
-                    .post('http://127.0.0.1:8080/api/timer/save')
+                    .post(RepCode.URL+'/api/timer/save')
                     .send('flowGroupId=' + values.flowGroupId)
                     .send('timeType=' + values.timeType)
                     .send('time=' + moment(values.time).format("HH:mm:ss"))

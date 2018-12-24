@@ -25,7 +25,7 @@ class SaveAction extends Component {
 
     getData() {
         Request
-            .get('http://127.0.0.1:8080/api/action/get')
+            .get(RepCode.URL+'/api/action/get')
             .query('id=' + this.id)
             .end((err, res) => {
                 if (res.body.code == RepCode.CODE_OK) {
@@ -41,7 +41,7 @@ class SaveAction extends Component {
 
     getActionTag() {
         Request
-            .get("http://127.0.0.1:8080/api/actiontag/list")
+            .get(RepCode.URL+"/api/actiontag/list")
             .query("pageSize=100")
             .query("pageIndex=1")
             .end((err, res) => {
@@ -63,7 +63,7 @@ class SaveAction extends Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 Request
-                    .post('http://127.0.0.1:8080/api/action/save')
+                    .post(RepCode.URL+'/api/action/save')
                     .send('name=' + values.name)
                     .send('className=' + values.className)
                     .send("tagId="+values.tagId)

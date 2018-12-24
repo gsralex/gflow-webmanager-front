@@ -37,7 +37,7 @@ export default class JobGroupDetail extends Component {
         title:'结束时间',
         width:200,
         render:(text,record)=>(
-            <span>{moment(record.endTime).format('YYYY-MM-DD HH:mm:ss')}</span>
+            <span>{StatusLabel.formatTime(record.endTime)}</span>
         )
     },{
         title:'用时',
@@ -70,7 +70,7 @@ export default class JobGroupDetail extends Component {
 
     getData() {
         Request
-            .get('http://127.0.0.1:8080/api/jobgroup/get')
+            .get(RepCode.URL+'/api/jobgroup/get')
             .query('id=' + this.id)
             .end((err, res) => {
                 if (!err) {
@@ -86,7 +86,7 @@ export default class JobGroupDetail extends Component {
 
     getJobData() {
         Request
-            .get('http://127.0.0.1:8080/api/job/list')
+            .get(RepCode.URL+'/api/job/list')
             .query('jobGroupId=' + this.id)
             .end((err, res) => {
                 if (!err) {

@@ -143,7 +143,7 @@ export default class JobGroupList extends Component {
 
     getFlowGroupList() {
         Request
-            .get('http://127.0.0.1:8080/api/flowgroup/select')
+            .get(RepCode.URL+'/api/flowgroup/select')
             .end((err, res) => {
                 if (!err) {
                     if (res.body.code == RepCode.CODE_OK) {
@@ -161,7 +161,7 @@ export default class JobGroupList extends Component {
             pageIndex: pageIndex
         }, () => {
             Request
-                .get('http://127.0.0.1:8080/api/jobgroup/querylist')
+                .get(RepCode.URL+'/api/jobgroup/querylist')
                 .query('flowGroupId=' + this.state.flowGroupId)
                 .query('date=' + this.state.date)
                 .query('pageSize=' + this.state.pageSize)

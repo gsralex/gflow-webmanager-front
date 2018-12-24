@@ -30,7 +30,7 @@ export default class FlowGroupList extends Component {
             pageIndex: pageIndex
         }, () => {
             Request
-                .get('http://127.0.0.1:8080/api/flowgroup/list')
+                .get(RepCode.URL+'/api/flowgroup/list')
                 .query('name=' + this.state.name)
                 .query('pageSize=' + this.state.pageSize)
                 .query('pageIndex=' + this.state.pageIndex)

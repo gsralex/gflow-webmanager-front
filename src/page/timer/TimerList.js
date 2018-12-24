@@ -107,7 +107,7 @@ export default class TimerList extends Component {
 
     remove(id) {
         Request
-            .post('http://127.0.0.1:8080/api/timer/remove')
+            .post(RepCode.URL+'/api/timer/remove')
             .send('id=' + id)
             .end((err, res) => {
                 if (!err) {
@@ -125,7 +125,7 @@ export default class TimerList extends Component {
         var id=record.id;
         record.active=!record.active;
         Request
-            .post('http://127.0.0.1:8080/api/timer/updateActive')
+            .post(RepCode.URL+'/api/timer/updateActive')
             .send('id=' + id)
             .send('active=' + record.active)
             .end((err, res) => {
@@ -145,7 +145,7 @@ export default class TimerList extends Component {
             pageIndex: pageIndex
         },()=>{
             Request
-            .get('http://127.0.0.1:8080/api/timer/list')
+            .get(RepCode.URL+'/api/timer/list')
             .query('pageSize=' + this.state.pageSize)
             .query('pageIndex=' + this.state.pageIndex)
             .end((err, res) => {

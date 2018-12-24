@@ -45,7 +45,7 @@ export default class StatusLabel {
     static getJobStatus(status) {
         switch (status) {
             case 1: {
-                return "发送失败";
+                return "发送成功";
             }
             case 2: {
                 return "发送失败";
