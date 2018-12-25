@@ -260,6 +260,16 @@ class Flow extends Component {
         this.start.svgG.setAttributeNS(null, "transform", "translate(" + x + "," + y + ")");
     }
 
+    updateIndex(index){
+        if(index>this.currentIndex){
+            this.currentIndex=index;
+        }
+    }
+
+    incrIndex(){
+        return  ++this.currentIndex;
+    }
+
     //创建action
     createAction(id, x, y, actionId, index, name, className) {
         //判断是否超出边界
@@ -267,16 +277,16 @@ class Flow extends Component {
             return;
         }
         if (index != -1) {
-            this.currentIndex = index;
+            this.updateIndex(index);
         } else {
-            this.currentIndex++;
+            index= this.incrIndex();
         }
-        var action = new Action(id, ActionType.Action, this.currentIndex, actionId, x, y);
+        var action = new Action(id, ActionType.Action, index, actionId, x, y);
 
         var gSvg = document.createElementNS(this.ns, "g");
         action.svgG = gSvg;
         this.append(gSvg);
-        gSvg.setAttributeNS(null, "index", this.currentIndex);
+        gSvg.setAttributeNS(null, "index", index);
         gSvg.setAttributeNS(null, "transform", "translate(" + x + "," + y + ")");
         var svg = document.createElementNS(this.ns, "rect");
         svg.setAttributeNS(null, 'width', action.width);
@@ -286,7 +296,7 @@ class Flow extends Component {
         svg.setAttributeNS(null, "rx", 5);
         svg.setAttributeNS(null, "ry", 5);
         svg.setAttributeNS(null, "class", "flow-action");
-        svg.setAttributeNS(null, "index", this.currentIndex);
+        svg.setAttributeNS(null, "index", index);
         gSvg.append(svg);
         action.svg = svg;
         this.bindMoveEvent(action);
@@ -307,7 +317,7 @@ class Flow extends Component {
         var hSvg = this.createHelper(action, hx, hy);
         action.svgHelper = hSvg;
         gSvg.append(hSvg);
-        this.saveMap(this.currentIndex, action);
+        this.saveMap(index, action);
     }
 
     bindMoveEvent(action) {
@@ -325,13 +335,10 @@ class Flow extends Component {
         });
 
         SVG.on(g,'mouseup',(e)=>{
-            console.log("mouseup.123");
             if (this.lineSelected) {
-                console.log("mouseup.456");
                 var action= this.getActionByNode(g);
                 console.log("action",action);
                 this.line.nextAction = action;
-            
             }
         });
 
