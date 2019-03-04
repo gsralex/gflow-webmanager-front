@@ -51,6 +51,9 @@ export default class JobGroupDetail extends Component {
         render:(text,record)=>(
             <span>{StatusLabel.getJobStatus(record.status)}</span>
         )
+    },{
+        title: '参数',
+        dataIndex: 'parameter'
     }];
     state = {
         jobGroup: null,
@@ -114,6 +117,7 @@ export default class JobGroupDetail extends Component {
                         <Description term="流程名称">{this.state.jobGroup.name}</Description>
                         <Description term="流程描述">{this.state.jobGroup.description}</Description>
                         <Description term="状态">{StatusLabel.getJobGroupStatus(this.state.jobGroup.status)}</Description>
+                        <Description term="参数">{this.state.jobGroup.parameter}</Description>
                         <Description term="开始时间">{StatusLabel.formatTime(this.state.jobGroup.startTime)}</Description>
                         <Description term="结束时间">{StatusLabel.formatTime(this.state.jobGroup.endTime)}</Description>
                         <Description term="用时">{StatusLabel.getUseTime(this.state.jobGroup.startTime, this.state.jobGroup.endTime)}</Description>

@@ -56,6 +56,9 @@ export default class JobGroupList extends Component {
         render: (text, record) => (
             <span>{StatusLabel.getUseTime(record.startTime, record.endTime)}</span>
         )
+    },{
+        title: '参数',
+        dataIndex: 'parameter'
     }, {
         title: '操作',
         key: 'action',

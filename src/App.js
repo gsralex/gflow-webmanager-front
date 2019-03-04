@@ -36,9 +36,6 @@ class App extends Component {
               <Menu.Item key="1">
                 <Link to='/actionlist'>
                   Action</Link></Menu.Item>
-              <Menu.Item key="2">
-                <Link to='/actiontaglist'>
-                  ActionTag</Link></Menu.Item>
             </SubMenu>
             <SubMenu title={<span className="submenu-title-wrapper"><Icon type="check-square" />Job</span>}>
               <Menu.Item key="3">

@@ -24,7 +24,6 @@ ReactDOM.render(
         <LocaleProvider locale={zhCN}>
             <App>
                 <Route path="/actionlist" component={ActionList} />
-                <Route path="/actiontaglist" component={ActionTagList} />
                 <Route path="/jobgrouplist" component={JobGroupList} />
                 <Route path="/jobgroupdetail" component={JobGroupDetail} />
                 <Route path="/joblist" component={JobList} />

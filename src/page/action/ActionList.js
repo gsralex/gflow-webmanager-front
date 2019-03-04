@@ -28,7 +28,7 @@ export default class ActionList extends Component {
 
     componentDidMount() {
         this.getData(1);
-        this.getActionTag();
+        //this.getActionTag();
         store.subscribe(this.saveActionOk.bind(this));
     }
 
@@ -93,7 +93,7 @@ export default class ActionList extends Component {
             dataIndex: 'className',
             width: 300,
         },{
-            title: 'tagId',
+            title: 'tag',
             dataIndex: 'tagName',
             width: 100,
         }, {
@@ -195,24 +195,24 @@ export default class ActionList extends Component {
             pageIndex: pageIndex
         }, () => {
             Request
-                .get(RepCode.URL+'/api/action/list')
+                .get(RepCode.URL+'/action/list')
                 .query('name=' + this.state.name)
                 .query('className=' + this.state.className)
-                .query('tagId='+this.state.tagId)
+                .query('tag='+this.state.tagId)
                 .query('pageSize=' + this.state.pageSize)
                 .query('pageIndex=' + this.state.pageIndex)
                 .end((err, res) => {
                     if (!err) {
-                        if (res.body.code == RepCode.CODE_OK) {
+                        // if (res.body.code == RepCode.CODE_OK) {
                             this.setState({
                                 dataSource: {
                                     count: res.body.dataCnt,
-                                    data: res.body.data,
+                                    data: res.body.actionList,
                                     page: res.body.pageIndex
                                 },
                                 loading: false
                             });
-                        }
+                        // }
                     } else {
                         message.error("请求失败");
                         this.setState({
